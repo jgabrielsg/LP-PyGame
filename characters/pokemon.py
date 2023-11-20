@@ -23,7 +23,7 @@ class Pokemon:
         self.dx = random.randrange(-1,1)
         self.dy = random.randrange(-1,1)
         self.visible = visible
-
+        self.norma = 1
         Pokemon.pokemon_list.append(self)
 
 
@@ -32,19 +32,24 @@ class Pokemon:
         if dano > 0:
             alvo.hp -= dano
 
-    def update(self, dt, SCREEN, SCREEN_WIDTH,SCREEN_HEIGHT):
+    def update(self, dt, SCREEN, SCREEN_WIDTH,SCREEN_HEIGHT, Blocks):
         #Movimentação do pokemon
         self.ultimo_movimento += dt
-        if self.rect.x >= SCREEN_WIDTH or self.rect.y >= SCREEN_HEIGHT or self.rect.x <= 0 or self.rect.y <=0:
-            self.dx = -1*self.dx
-            self.dy = -1*self.dy
-            self.ultimo_movimento = 0
+        for block in Blocks:
+            if self.rect.colliderect(block):
+                    # Se houver colisão, mude a direção
+                    self.dx = -1*self.dx
+                    self.dy = -1*self.dy
         if self.ultimo_movimento >= 2:
             self.dx = random.randrange(-1,1)
             self.dy = random.randrange(-1,1)
             self.ultimo_movimento = 0
-        self.rect.x += self.dx*5
-        self.rect.y += self.dy*5
+            if self.dx != 0 and self.dy != 0:
+                self.norma = 1.4
+            else:
+                self.norma = 1
+        self.rect.x += (self.dx*5)/self.norma
+        self.rect.y += (self.dy*5)/self.norma
 
         #Atualiza a imagem do pokemon ao andar
         if self.visible:

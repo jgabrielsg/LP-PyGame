@@ -60,7 +60,7 @@ class Game:
 
         # Atualiza os Pokémons
         for pokemon in self.pokemons:
-            pokemon.update(dt, self.screen, SCREEN_WIDHT, SCREEN_HEIGHT)
+            pokemon.update(dt, self.screen, SCREEN_WIDHT, SCREEN_HEIGHT, self.blocks)
 
             # Verifica a colisão com os Pokémons
             if self.is_collision(self.player.rect, pokemon.rect) and pokemon.visible:
