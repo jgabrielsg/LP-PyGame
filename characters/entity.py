@@ -7,6 +7,7 @@ class Entity(pygame.sprite.Sprite):
         self.direction = pygame.math.Vector2()
 
         self.rect = self.image.get_rect(center = pos)
+        self.hitbox = self.rect
         self.speed = 0
         
     def move(self, speed):

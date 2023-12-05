@@ -8,7 +8,7 @@ class Enemy(Entity):
 
         self.image = pygame.transform.scale(self.image, (self.image.get_width() // 10, self.image.get_height() // 10))
         self.speed = 1
-        self.rect = self.image.get_rect(topleft = pos)
+        self.rect = self.image.get_rect(center = pos)
         self.hitbox = self.rect
 
     #Função que diz pro inimigo a direção do player

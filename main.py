@@ -41,7 +41,7 @@ class Game:
         self.enemies.append(self.enemy)
         
         self.running = True
-
+    
     # Aqui ficam os handlers de eventos
     def events(self):
         for event in pygame.event.get():
@@ -49,27 +49,25 @@ class Game:
                 self.running = False
                 pygame.quit()
                 sys.exit()
-
+    
     # Qualquer atualização de posição ou animação ficam aqui.
     def update(self):
         dt = self.clock.tick(120) / 1000.0
 
         # Atualiza o player
         self.player.update()
-
+        
         for enemy in self.enemies:
             enemy.set_direction(self.player)
             enemy.update()
+            if (enemy.hitbox.colliderect(self.player.hitbox)):
+                print("Colisão funfando")
 
         # Cuida da câmera
         self.camera.update()
 
         self.camera.center_target_camera(self.player)
         self.camera.custom_draw()  
-
-    # Checa colisão entre objetos (Como player e paredes)
-    def is_collision(self, obj1, obj2):
-        return obj1.colliderect(obj2)
 
     # Desenhas as coisas na tela
     def render(self):
