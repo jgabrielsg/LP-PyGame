@@ -3,8 +3,8 @@ import sys
 from random import randint
 
 from characters.player import Player
+from characters.enemy import Enemy
 from camera import CameraGroup
-from arvore import Tree
 
 from block import Block
 from config import SCREEN_HEIGHT, SCREEN_WIDHT
@@ -34,14 +34,12 @@ class Game:
         # Game objects
         self.player = Player(initial_pos, self.camera, image_path="assets/images/player.png")
 
-        self.trees = []
+        self.enemies = []
 
-        for i in range(20):
-            random_x = randint(0,1000)
-            random_y = randint(0,1000)
-            tree = Tree((random_x, random_y), self.camera, image_path='assets/images/wall.png')
-            self.trees.append(tree)
+        self.enemy = Enemy((900,900), self.camera, image_path="assets/images/applejack.png")
 
+        self.enemies.append(self.enemy)
+        
         self.running = True
 
     # Aqui ficam os handlers de eventos
@@ -49,16 +47,8 @@ class Game:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                if self.PLAY_BUTTON.checkForInput(pygame.mouse.get_pos()):
-                    return 'play'
-                elif self.OPTIONS_BUTTON.checkForInput(pygame.mouse.get_pos()):
-                    pass  # Adicione a lógica para abrir a tela de opções aqui
-                elif self.QUIT_BUTTON.checkForInput(pygame.mouse.get_pos()):
-                    self.running = False
-                    pygame.quit()
-                    sys.exit()
-
+                pygame.quit()
+                sys.exit()
 
     # Qualquer atualização de posição ou animação ficam aqui.
     def update(self):
@@ -66,6 +56,10 @@ class Game:
 
         # Atualiza o player
         self.player.update()
+
+        for enemy in self.enemies:
+            enemy.set_direction(self.player)
+            enemy.update()
 
         # Cuida da câmera
         self.camera.update()

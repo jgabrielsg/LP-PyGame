@@ -1,15 +1,16 @@
 import pygame
+from characters.entity import Entity
 
-class Player(pygame.sprite.Sprite):
-    def __init__(self, pos, group, image_path=None):
-        super().__init__(group)
-        self.original_image = pygame.image.load(image_path).convert_alpha()
-        self.original_image = pygame.transform.scale(self.original_image, (self.original_image.get_width() // 1.2, self.original_image.get_height() // 1.2))
-
+class Player(Entity):
+    def __init__(self, pos, group, image_path):
+        super().__init__(pos, group, image_path)
+        self.sprite_type = 'player'
+        
+        self.original_image = pygame.transform.scale(self.image, (self.image.get_width() // 1.2, self.image.get_height() // 1.2))
         self.image = self.original_image
-        self.rect = self.image.get_rect(center = pos)
-        self.direction = pygame.math.Vector2()
+
         self.speed = 3
+        self.hitbox = self.rect.inflate(0,-10)
 
     def input(self):
         keys = pygame.key.get_pressed()
@@ -31,8 +32,5 @@ class Player(pygame.sprite.Sprite):
             self.direction.y = 0
 
     def update(self):
+        super().update()
         self.input()
-        self.rect.center += self.direction * self.speed
-
-    # def draw(self, screen):
-    #     screen.blit(self.image, self)
