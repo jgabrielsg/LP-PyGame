@@ -9,6 +9,10 @@ from config import SCREEN_HEIGHT, SCREEN_WIDHT
 from screens.main_menu import Menu
 from screens.options import Options
 
+from music import Music
+
+music_player = Music()
+
 class Game:
     def __init__(self):
         pygame.init()
@@ -102,6 +106,7 @@ if __name__ == "__main__":
     while True:
         result = menu.run()
         if result == 'play':
+            music_player.background
             game.run()
         elif result == 'options':
             options.run()

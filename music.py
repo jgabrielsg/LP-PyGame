@@ -8,7 +8,7 @@ class Music:
 
     @property
     def background(self):
-        song_path = "" 
+        song_path = "assets/sounds/background.mp3" 
         pygame.mixer.music.load(song_path)
         pygame.mixer.music.play(-1)
 
