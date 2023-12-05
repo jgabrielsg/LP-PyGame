@@ -3,8 +3,10 @@ import pygame
 class Player(pygame.sprite.Sprite):
     def __init__(self, pos, group, image_path=None):
         super().__init__(group)
-        self.image = pygame.image.load(image_path).convert_alpha()
-        self.image = pygame.transform.scale(self.image, (self.image.get_width() // 1.2, self.image.get_height() // 1.2))
+        self.original_image = pygame.image.load(image_path).convert_alpha()
+        self.original_image = pygame.transform.scale(self.original_image, (self.original_image.get_width() // 1.2, self.original_image.get_height() // 1.2))
+
+        self.image = self.original_image
         self.rect = self.image.get_rect(center = pos)
         self.direction = pygame.math.Vector2()
         self.speed = 3
@@ -14,8 +16,10 @@ class Player(pygame.sprite.Sprite):
 
         if keys[pygame.K_LEFT]:
             self.direction.x = -1
+            self.image = self.original_image
         elif keys[pygame.K_RIGHT]:
             self.direction.x = 1
+            self.image = pygame.transform.flip(self.original_image, True, False)
         else:
             self.direction.x = 0
 
