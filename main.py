@@ -2,7 +2,6 @@ import pygame
 import sys
 
 from characters.player import Player
-from characters.pokemon import Pokemon
 
 from block import Block
 from config import SCREEN_HEIGHT, SCREEN_WIDHT
@@ -20,17 +19,14 @@ class Game:
         self.screen = pygame.display.set_mode((SCREEN_WIDHT, SCREEN_HEIGHT))
         pygame.display.set_caption("Pygame Window")
 
-        # Game objects
-        self.player = Player(SCREEN_WIDHT/2, SCREEN_HEIGHT/2, 48, 64, image_path="assets/images/player.png")
-        self.blocks = [Block(0, 0, 64, 800, image_path="assets/images/wall.png"),  # Bloco vermelho
-                    Block(0, SCREEN_HEIGHT-64, 1200, 64, image_path="assets/images/wall.png"), # o verde
-                    Block(SCREEN_WIDHT-64, 0, 64, 800, image_path="assets/images/wall.png"), # o amarelo
-                    Block(0, 0, 576, 64, image_path="assets/images/wall.png"), 
-                    Block(640, 0, 640, 64, image_path="assets/images/wall.png")] 
-        
-        self.pokemons = [Pokemon("assets/images/pokemon.png","Shrek","Lama", 0, 1, 5, 10, 20, 100, 300, 300, True),
-                         Pokemon("assets/images/applejack.png", "Applejack", "Terra", 0, 1, 30, 20, 30, 80, 600, 300, True)]
+        # Camera setup
+        self.camera_group = pygame.sprite.Group()
 
+        initial_pos = (SCREEN_WIDHT/2, SCREEN_HEIGHT/2)
+
+        # Game objects
+        self.player = Player(initial_pos, self.camera_group, image_path="assets/images/player.png")
+        
         self.background = pygame.image.load('assets/images/woodtile.png').convert()
 
         self.running = True
@@ -55,17 +51,12 @@ class Game:
     def update(self):
         dt = self.clock.tick(120) / 1000.0
 
-        # Atualiza a posição do jogador
-        self.player.update_position(self.blocks)
+        # Atualiza o player
+        self.player.update()
 
-        # Atualiza os Pokémons
-        for pokemon in self.pokemons:
-            pokemon.update(dt, self.screen, SCREEN_WIDHT, SCREEN_HEIGHT, self.blocks)
-
-            # Verifica a colisão com os Pokémons
-            if self.is_collision(self.player.rect, pokemon.rect) and pokemon.visible:
-                print(f"Você colidiu com {pokemon.nome}!")
-
+        # Cuida da câmera
+        self.camera_group.update()
+        self.camera_group.draw(self.screen)
 
     # Checa colisão entre objetos (Como player e paredes)
     def is_collision(self, obj1, obj2):
@@ -85,16 +76,6 @@ class Game:
         # Desenha o jogador
         self.player.draw(self.screen)
 
-        # Desenha os blocos
-        for block in self.blocks:
-            block.draw(self.screen)
-
-        # Desenha os Pokémons
-        for pokemon in self.pokemons:
-            if pokemon.visible:
-                self.screen.blit(pokemon.image, pokemon.rect)
-
-
     # Chama todas as funções de game
     def run(self):
         clock = pygame.time.Clock()
@@ -113,7 +94,6 @@ class Game:
         pygame.quit()
         sys.exit()
 
-
 # Cria o game e roda ele
 if __name__ == "__main__":
     game = Game()
@@ -125,5 +105,3 @@ if __name__ == "__main__":
             game.run()
         elif result == 'options':
             options.run()
-
-

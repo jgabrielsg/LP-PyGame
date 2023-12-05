@@ -1,51 +1,33 @@
 import pygame
 
-class Player(pygame.Rect):
-    def __init__(self, x, y, width, height, image_path=None):
-        super().__init__(x, y, width, height)
-        self.color = (0, 128, 255)  # Azul
-        self.speed = 5
+class Player(pygame.sprite.Sprite):
+    def __init__(self, pos, group, image_path=None):
+        super().__init__(group)
         self.image = pygame.image.load(image_path).convert_alpha()
-        self.rect = pygame.Rect(x, y, width, height)
+        self.rect = self.image.get_rect(center = pos)
+        self.direction = pygame.math.Vector2()
+        self.speed = 3
 
-    def update_position(self, blocks):
+    def input(self):
         keys = pygame.key.get_pressed()
 
-        dx, dy = 0, 0
         if keys[pygame.K_LEFT]:
-            dx -= self.speed
-        if keys[pygame.K_RIGHT]:
-            dx += self.speed
+            self.direction.x = -1
+        elif keys[pygame.K_RIGHT]:
+            self.direction.x = 1
+        else:
+            self.direction.x = 0
+
         if keys[pygame.K_UP]:
-            dy -= self.speed
-        if keys[pygame.K_DOWN]:
-            dy += self.speed
+            self.direction.y = -1
+        elif keys[pygame.K_DOWN]:
+            self.direction.y = 1
+        else:
+            self.direction.y = 0
 
-        # Atualiza a posição do retângulo de colisão para o movimento horizontal
-        self.rect.x += dx
-
-        # Verificar colisões com os blocos para o movimento horizontal
-        for block in blocks:
-            if self.rect.colliderect(block):
-                # Se houver colisão, não atualize a posição horizontal
-                self.rect.x -= dx
-                dx = 0
-
-        # Atualiza a posição do retângulo de colisão para o movimento vertical
-        self.rect.y += dy
-
-        # Verificar colisões com os blocos para o movimento vertical
-        for block in blocks:
-            if self.rect.colliderect(block):
-                # Se houver colisão, não atualize a posição vertical
-                self.rect.y -= dy
-                dy = 0
-
-        # Se não houver colisão, atualize a posição
-        self.x += dx
-        self.y += dy
-
-
+    def update(self):
+        self.input()
+        self.rect.center += self.direction * self.speed
 
     def draw(self, screen):
         screen.blit(self.image, self)
