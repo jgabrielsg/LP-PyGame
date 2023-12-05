@@ -23,7 +23,7 @@ class Game:
         pygame.display.set_caption("Pygame Window")
 
         # Camera setup
-        self.camera = CameraGroup(groundpath='assets/images/woodtile.png')
+        self.camera = CameraGroup(groundpath='assets/images/mapa.png')
 
         initial_pos = (SCREEN_WIDHT/2, SCREEN_HEIGHT/2)
 
@@ -76,7 +76,7 @@ class Game:
     # Desenhas as coisas na tela
     def render(self):
         # Limpa a tela
-        self.screen.fill("#85FACF")
+        self.screen.fill((0,0,0))
 
         # Preenche a tela com a imagem de fundo
         # for i in range(0, SCREEN_WIDHT, 64):

@@ -4,6 +4,7 @@ class Player(pygame.sprite.Sprite):
     def __init__(self, pos, group, image_path=None):
         super().__init__(group)
         self.image = pygame.image.load(image_path).convert_alpha()
+        self.image = pygame.transform.scale(self.image, (self.image.get_width() // 1.2, self.image.get_height() // 1.2))
         self.rect = self.image.get_rect(center = pos)
         self.direction = pygame.math.Vector2()
         self.speed = 3
