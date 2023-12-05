@@ -29,5 +29,5 @@ class Player(pygame.sprite.Sprite):
         self.input()
         self.rect.center += self.direction * self.speed
 
-    def draw(self, screen):
-        screen.blit(self.image, self)
+    # def draw(self, screen):
+    #     screen.blit(self.image, self)

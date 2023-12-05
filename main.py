@@ -1,7 +1,10 @@
 import pygame
 import sys
+from random import randint
 
 from characters.player import Player
+from camera import CameraGroup
+from arvore import Tree
 
 from block import Block
 from config import SCREEN_HEIGHT, SCREEN_WIDHT
@@ -20,14 +23,20 @@ class Game:
         pygame.display.set_caption("Pygame Window")
 
         # Camera setup
-        self.camera_group = pygame.sprite.Group()
+        self.camera = CameraGroup(groundpath='assets/images/woodtile.png')
 
         initial_pos = (SCREEN_WIDHT/2, SCREEN_HEIGHT/2)
 
         # Game objects
-        self.player = Player(initial_pos, self.camera_group, image_path="assets/images/player.png")
-        
-        self.background = pygame.image.load('assets/images/woodtile.png').convert()
+        self.player = Player(initial_pos, self.camera, image_path="assets/images/player.png")
+
+        self.trees = []
+
+        for i in range(20):
+            random_x = randint(0,1000)
+            random_y = randint(0,1000)
+            tree = Tree((random_x, random_y), self.camera, image_path='assets/images/wall.png')
+            self.trees.append(tree)
 
         self.running = True
 
@@ -55,35 +64,34 @@ class Game:
         self.player.update()
 
         # Cuida da câmera
-        self.camera_group.update()
-        self.camera_group.draw(self.screen)
+        self.camera.update()
+
+        self.camera.center_target_camera(self.player)
+        self.camera.custom_draw()  
 
     # Checa colisão entre objetos (Como player e paredes)
     def is_collision(self, obj1, obj2):
         return obj1.colliderect(obj2)
 
-
     # Desenhas as coisas na tela
     def render(self):
         # Limpa a tela
-        self.screen.fill((0, 0, 0))
+        self.screen.fill("#85FACF")
 
         # Preenche a tela com a imagem de fundo
-        for i in range(0, SCREEN_WIDHT, 64):
-            for j in range(0, SCREEN_HEIGHT, 64):
-                self.screen.blit(self.background, (i, j))        
+        # for i in range(0, SCREEN_WIDHT, 64):
+        #     for j in range(0, SCREEN_HEIGHT, 64):
+        #         self.screen.blit(self.background, (i, j))      
 
-        # Desenha o jogador
-        self.player.draw(self.screen)
-
+        
     # Chama todas as funções de game
     def run(self):
         clock = pygame.time.Clock()
 
         while self.running:
             self.events()
-            self.update()
             self.render()
+            self.update()
 
             # Limita a taxa de quadros (FPS)
             clock.tick(60)
