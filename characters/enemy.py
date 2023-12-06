@@ -9,7 +9,6 @@ class Enemy(Entity):
         self.image = pygame.transform.scale(self.image, (self.image.get_width() // 10, self.image.get_height() // 10))
         self.speed = 1
         self.rect = self.image.get_rect(center = pos)
-        self.hitbox = self.rect
 
     #Função que diz pro inimigo a direção do player
     def set_direction(self, player):
@@ -25,3 +24,9 @@ class Enemy(Entity):
         #graphics
 
         # self.image = pygame.surface((64,64))
+    
+    def get_damage(self, player, attack_type):
+        if attack_type == 'bullet':
+            self.health -= player.get_damage()
+            print(self.health)
+        

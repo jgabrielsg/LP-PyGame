@@ -16,9 +16,14 @@ class Entity(pygame.sprite.Sprite):
         if self.direction.magnitude() != 0:
             self.direction = self.direction.normalize()
 
-        self.hitbox.x += self.direction.x * speed
-        self.hitbox.y += self.direction.y * speed
-        self.rect.center = self.hitbox.center
+        self.rect.x += self.direction.x * speed
+        self.rect.y += self.direction.y * speed
+
+    def check_death(self):
+        if self.health <= 0:
+            self.kill()
 
     def update(self):
+        self.check_death()
         self.move(self.speed)
+

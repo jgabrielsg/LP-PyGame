@@ -38,6 +38,10 @@ class Game:
         self.player = Player(initial_pos, self.camera, 100, image_path="assets/images/player.png")
         self.projectiles = []
 
+        # Proriedades de Ataque
+        self.attack_sprites = pygame.sprite.Group()
+        self.attackable_sprites = pygame.sprite.Group()
+
         # Controle de Inimigos
         self.enemies = []
         self.cooldown = 1
@@ -53,12 +57,25 @@ class Game:
                 self.running = False
                 pygame.quit()
                 sys.exit()
-            
+
             #Cuida dos tiros do player
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if self.running == True:
-                    PlayerProjectile = Bullet(self.player.hitbox.center, self.camera, 1, self.camera.offset, image_path="assets/images/bullet.png")
+                    PlayerProjectile = Bullet(self.player.rect.center, [self.attack_sprites, self.camera], 1, self.camera.offset, image_path="assets/images/bullet.png")
                     self.projectiles.append(PlayerProjectile)
+
+    def collisions(self):
+        #Função que cuida das colisões de dano (inimigo - player), (tiro - inimigo)
+
+        #Dano nos inimigos 
+        if self.attack_sprites:
+            for attack_sprite in self.attack_sprites:
+                collision_sprites = pygame.sprite.spritecollide(attack_sprite, self.attackable_sprites, False)
+                if collision_sprites:
+                    for target_sprite in collision_sprites:
+                        target_sprite.get_damage(self.player, attack_sprite.sprite_type)
+                        if attack_sprite.sprite_type == 'bullet':
+                            attack_sprite.kill()
     
     # Qualquer atualização de posição ou animação ficam aqui.
     def update(self):
@@ -69,26 +86,22 @@ class Game:
             self.enemyOnCooldown = True
             self.cooldown = random.randint(1,5)
             self.tempoInicio = tempo
-
         elif tempo > (self.tempoInicio + self.cooldown):
             self.criar_inimigos(random.randint(1,2))
             self.enemyOnCooldown = False
 
-        # Atualiza o player
-        self.player.update()
-        
         for enemy in self.enemies:
             enemy.set_direction(self.player)
             enemy.update()
-            if (enemy.hitbox.colliderect(self.player.hitbox)):
-                # print("Colisão funfando")
-                pass
-        
+
+        # Descobri que o pygame chama sozinho todos os métodos update(), mas vou deixar só pra deixar bonito
         for projectile in self.projectiles:
-            # Loops de todos os projéteis, pensei em tacar aqui a colisão mas talvez isso não seja mt ótimo, teria q iterar sobre todos os
-            # projéteis e todos os inimigos
-            #TODO ver como checar a interação dos tiros e dos inimigos
-            pass
+            projectile.update()
+
+        # Atualiza o player
+        self.player.update()
+
+        self.collisions()
 
         self.screen.fill((0,0,0)) 
 
@@ -106,10 +119,10 @@ class Game:
 
         #Cria os inimigos com base no tipo deles
         if type == 1:
-            NewEnemy = Enemy((x, y), self.camera, 50, image_path="assets/images/applejack.png")
+            NewEnemy = Enemy((x, y), [self.attackable_sprites, self.camera], 50, image_path="assets/images/applejack.png")
             self.enemies.append(NewEnemy)
         elif type == 2:
-            NewEnemy = Enemy((x, y), self.camera, 50, image_path="assets/images/pokemon.png")
+            NewEnemy = Enemy((x, y), [self.attackable_sprites, self.camera], 50, image_path="assets/images/pokemon.png")
             self.enemies.append(NewEnemy)
             
 
@@ -121,7 +134,6 @@ class Game:
         while self.running:
             self.events()
             self.update()
-            # self.criar_inimigos()
 
             # Limita a taxa de quadros (FPS)
             clock.tick(60)
