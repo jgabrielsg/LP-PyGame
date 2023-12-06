@@ -1,9 +1,10 @@
 import pygame
 from characters.entity import Entity
+from abc import abstractmethod
 
 class Enemy(Entity):
-    def __init__(self, pos, health, groups, image_path):
-        super().__init__(pos, health, groups, image_path)
+    def __init__(self, pos, groups, health, image_path):
+        super().__init__(pos, groups, health, image_path)
         self.sprite_type = 'enemy'
 
         self.image = pygame.transform.scale(self.image, (self.image.get_width() // 10, self.image.get_height() // 10))
@@ -28,4 +29,18 @@ class Enemy(Entity):
     def get_damage(self, player, attack_type):
         if attack_type == 'bullet':
             self.health -= player.get_damage()
-        
+    
+    @abstractmethod
+    def _atack(self,player): ...
+    
+class Enemy_Tank(Enemy):
+    def __init__(self, pos, groups):
+        super().__init__(pos, groups, 100, image_path="assets/images/pokemon.png")
+
+    def _atack(self,player): ...
+    
+class Enemy_Shooter(Enemy):
+    def __init__(self, pos, groups):
+        super().__init__(pos, groups, 50, image_path="assets/images/applejack.png")
+
+    def _atack(self,player): ...

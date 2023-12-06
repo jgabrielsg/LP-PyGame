@@ -5,7 +5,7 @@ import math
 import random
 
 from characters.player import Player
-from characters.enemy import Enemy
+from characters.enemy import Enemy_Tank, Enemy_Shooter
 from camera import CameraGroup
 from bullet import Bullet
 
@@ -133,10 +133,10 @@ class Game:
 
         #Cria os inimigos com base no tipo deles
         if type == 1:
-            NewEnemy = Enemy((x, y), [self.attackable_sprites, self.camera], 50, image_path="assets/images/applejack.png")
+            NewEnemy = Enemy_Tank((x, y), [self.attackable_sprites, self.camera])
             self.enemies.append(NewEnemy)
         elif type == 2:
-            NewEnemy = Enemy((x, y), [self.attackable_sprites, self.camera], 50, image_path="assets/images/pokemon.png")
+            NewEnemy = Enemy_Shooter((x, y), [self.attackable_sprites, self.camera])
             self.enemies.append(NewEnemy)
             
 
