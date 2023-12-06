@@ -2,8 +2,8 @@ import pygame
 from characters.entity import Entity
 
 class Player(Entity):
-    def __init__(self, pos, group, image_path):
-        super().__init__(pos, group, image_path)
+    def __init__(self, pos, group, health, image_path):
+        super().__init__(pos, group, health, image_path)
         self.sprite_type = 'player'
         
         self.original_image = pygame.transform.scale(self.image, (self.image.get_width() // 1.2, self.image.get_height() // 1.2))

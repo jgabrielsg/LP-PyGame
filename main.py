@@ -1,6 +1,8 @@
 import pygame
 import sys
-from random import randint
+
+import math
+import random
 
 from characters.player import Player
 from characters.enemy import Enemy
@@ -32,13 +34,14 @@ class Game:
         initial_pos = (SCREEN_WIDHT/2, SCREEN_HEIGHT/2)
 
         # Game objects
-        self.player = Player(initial_pos, self.camera, image_path="assets/images/player.png")
+        self.player = Player(initial_pos, self.camera, 100, image_path="assets/images/player.png")
 
+
+        # Controle de Inimigos
         self.enemies = []
-
-        self.enemy = Enemy((900,900), self.camera, image_path="assets/images/applejack.png")
-
-        self.enemies.append(self.enemy)
+        self.cooldown = 1
+        self.enemyOnCooldown = True
+        self.tempoInicio = 0
         
         self.running = True
     
@@ -52,7 +55,17 @@ class Game:
     
     # Qualquer atualização de posição ou animação ficam aqui.
     def update(self):
-        dt = self.clock.tick(120) / 1000.0
+        tempo = (pygame.time.get_ticks() - self.start_time) / 1000
+
+        # Spawna os inimigos em intervalos de tempo aleatórios.
+        if not self.enemyOnCooldown:
+            self.enemyOnCooldown = True
+            self.cooldown = random.randint(1,5)
+            self.tempoInicio = tempo
+
+        elif tempo > (self.tempoInicio + self.cooldown):
+            self.criar_inimigos(random.randint(1,2))
+            self.enemyOnCooldown = False
 
         # Atualiza o player
         self.player.update()
@@ -61,33 +74,41 @@ class Game:
             enemy.set_direction(self.player)
             enemy.update()
             if (enemy.hitbox.colliderect(self.player.hitbox)):
-                print("Colisão funfando")
+                # print("Colisão funfando")
+                pass
+
+        self.screen.fill((0,0,0)) 
 
         # Cuida da câmera
         self.camera.update()
-
         self.camera.center_target_camera(self.player)
         self.camera.custom_draw()  
 
-    # Desenhas as coisas na tela
-    def render(self):
-        # Limpa a tela
-        self.screen.fill((0,0,0))
+    # Cria inimigos fora do campo de visão do player
+    def criar_inimigos(self, type=1):
+        distancia = 1500
+        angle = random.uniform(0, 2 * math.pi)
+        x = self.player.rect.centerx + distancia * math.cos(angle)
+        y = self.player.rect.centery + distancia * math.sin(angle)
 
-        # Preenche a tela com a imagem de fundo
-        # for i in range(0, SCREEN_WIDHT, 64):
-        #     for j in range(0, SCREEN_HEIGHT, 64):
-        #         self.screen.blit(self.background, (i, j))      
+        #Cria os inimigos com base no tipo deles
+        if type == 1:
+            NewEnemy = Enemy((x, y), self.camera, 50, image_path="assets/images/applejack.png")
+            self.enemies.append(NewEnemy)
+        elif type == 2:
+            NewEnemy = Enemy((x, y), self.camera, 50, image_path="assets/images/pokemon.png")
+            self.enemies.append(NewEnemy)
+            
 
-        
     # Chama todas as funções de game
     def run(self):
         clock = pygame.time.Clock()
+        self.start_time = pygame.time.get_ticks()
 
         while self.running:
             self.events()
-            self.render()
             self.update()
+            # self.criar_inimigos()
 
             # Limita a taxa de quadros (FPS)
             clock.tick(60)
