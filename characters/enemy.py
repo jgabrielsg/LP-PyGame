@@ -28,5 +28,4 @@ class Enemy(Entity):
     def get_damage(self, player, attack_type):
         if attack_type == 'bullet':
             self.health -= player.get_damage()
-            print(self.health)
         

@@ -84,8 +84,22 @@ class Game:
         # Spawna os inimigos em intervalos de tempo aleatórios.
         if not self.enemyOnCooldown:
             self.enemyOnCooldown = True
-            self.cooldown = random.randint(1,5)
+            #Dificultando com o passar do tempo
+
+            if tempo > 120:
+                self.cooldown = 0.1
+            elif tempo > 90:
+                self.cooldown = random.randint(0,0.5)
+            elif tempo > 60:
+                self.cooldown = random.randint(0,2)
+            elif tempo > 30:
+                self.cooldown = random.randint(0,3)
+            elif tempo > 15:
+                self.cooldown = random.randint(0,5)
+            else: self.cooldown = 5
+
             self.tempoInicio = tempo
+
         elif tempo > (self.tempoInicio + self.cooldown):
             self.criar_inimigos(random.randint(1,2))
             self.enemyOnCooldown = False
@@ -112,7 +126,7 @@ class Game:
 
     # Cria inimigos fora do campo de visão do player
     def criar_inimigos(self, type=1):
-        distancia = 1500
+        distancia = 1000
         angle = random.uniform(0, 2 * math.pi)
         x = self.player.rect.centerx + distancia * math.cos(angle)
         y = self.player.rect.centery + distancia * math.sin(angle)
