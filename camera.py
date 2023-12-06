@@ -14,9 +14,13 @@ class CameraGroup(pygame.sprite.Group):
         self.ground_surf = pygame.image.load(groundpath).convert_alpha()
         self.ground_rect = self.ground_surf.get_rect(topleft = (0,0))
 
+        # Map boundaries
+        self.map_width = self.ground_rect.width
+        self.map_height = self.ground_rect.height
+
     def center_target_camera(self, player):
-        self.offset.x = player.rect.centerx - self.half_w
-        self.offset.y = player.rect.centery - self.half_h
+        self.offset.x = max(0, min(player.rect.centerx - self.half_w, self.map_width - self.display_surface.get_width()))
+        self.offset.y = max(0, min(player.rect.centery - self.half_h, self.map_height - self.display_surface.get_height()))
 
     # Desenha os sprites ordenados pela sua posição Y, então dá uma impressão de 3D
     def custom_draw(self):
