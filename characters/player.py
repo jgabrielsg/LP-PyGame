@@ -10,7 +10,8 @@ class Player(Entity):
         self.image = self.original_image
 
         self.speed = 3
-        self.base_damage = 25
+        self.base_damage = 10
+        self.xp = 0
 
     def input(self):
         keys = pygame.key.get_pressed()
@@ -34,6 +35,16 @@ class Player(Entity):
     def update(self):
         super().update()
         self.input()
+        print(self.xp)
 
     def get_damage(self):
         return self.base_damage
+    
+    def get_xp(self):
+        return self.xp
+    
+    def xp_up(self, amount):
+        self.xp += amount
+
+    def redefine_xp(self):
+        self.xp = 0

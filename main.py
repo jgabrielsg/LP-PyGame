@@ -8,6 +8,7 @@ from characters.player import Player
 from characters.enemy import Enemy
 from camera import CameraGroup
 from bullet import Bullet
+from mana import Mana
 
 from block import Block
 from config import SCREEN_HEIGHT, SCREEN_WIDHT
@@ -38,17 +39,41 @@ class Game:
         self.player = Player(initial_pos, self.camera, 100, image_path="assets/images/player.png")
         self.projectiles = []
 
-        # Proriedades de Ataque
+        # Cria grupos (listas) de sprites para iteração
         self.attack_sprites = pygame.sprite.Group()
         self.attackable_sprites = pygame.sprite.Group()
+        self.item_sprites = pygame.sprite.Group()
+
+        # Controle de Mana
+        self.manaGenerationCooldown = 2
+        self.manaOnCooldown = False
+        self.manaTempoInicio = 0
 
         # Controle de Inimigos
         self.enemies = []
-        self.cooldown = 1
+        self.enemyGenerationCooldown = 1
         self.enemyOnCooldown = True
         self.tempoInicio = 0
         
         self.running = True
+
+    # Chama todas as funções de game
+    def run(self):
+        clock = pygame.time.Clock()
+        self.start_time = pygame.time.get_ticks()
+
+        while self.running:
+            self.events()
+            self.update()
+
+            # Limita a taxa de quadros (FPS)
+            clock.tick(60)
+
+            # Atualiza a tela
+            pygame.display.flip()
+
+        pygame.quit()
+        sys.exit()
     
     # Aqui ficam os handlers de eventos
     def events(self):
@@ -66,7 +91,15 @@ class Game:
 
     def collisions(self):
         #Função que cuida das colisões de dano (inimigo - player), (tiro - inimigo)
-
+        
+        #Coleta de Mana
+        if self.item_sprites:
+            collision_sprites = pygame.sprite.spritecollide(self.player, self.item_sprites, True)
+            if collision_sprites:
+                for mana in collision_sprites:
+                    self.player.xp_up(mana.xp)
+                    mana.kill()
+        
         #Dano nos inimigos 
         if self.attack_sprites:
             for attack_sprite in self.attack_sprites:
@@ -81,28 +114,11 @@ class Game:
     def update(self):
         tempo = (pygame.time.get_ticks() - self.start_time) / 1000
 
+        #Cria mana a cada dois segundos
+        self.randomizador_mana(tempo)
+        
         # Spawna os inimigos em intervalos de tempo aleatórios.
-        if not self.enemyOnCooldown:
-            self.enemyOnCooldown = True
-            #Dificultando com o passar do tempo
-
-            if tempo > 120:
-                self.cooldown = 0.1
-            elif tempo > 90:
-                self.cooldown = random.randint(0,0.5)
-            elif tempo > 60:
-                self.cooldown = random.randint(0,2)
-            elif tempo > 30:
-                self.cooldown = random.randint(0,3)
-            elif tempo > 15:
-                self.cooldown = random.randint(0,5)
-            else: self.cooldown = 5
-
-            self.tempoInicio = tempo
-
-        elif tempo > (self.tempoInicio + self.cooldown):
-            self.criar_inimigos(random.randint(1,2))
-            self.enemyOnCooldown = False
+        self.randomizador_inimigos(tempo)
 
         for enemy in self.enemies:
             enemy.set_direction(self.player)
@@ -124,8 +140,40 @@ class Game:
         self.camera.center_target_camera(self.player)
         self.camera.custom_draw()  
 
+    def randomizador_inimigos(self, tempo):
+        if not self.enemyOnCooldown:
+
+            self.enemyOnCooldown = True
+
+            #Dificultando com o passar do tempo
+            if tempo > 120: self.enemyGenerationCooldown = 0.1
+            elif tempo > 90: self.enemyGenerationCooldown = 0.5
+            elif tempo > 60: self.enemyGenerationCooldown = random.randint(0,1)
+            elif tempo > 30: self.enemyGenerationCooldown = random.randint(0,2)
+            elif tempo > 15: self.enemyGenerationCooldown = random.randint(0,3)
+            else: self.enemyGenerationCooldown = 3
+
+            self.tempoInicio = tempo
+
+        elif tempo > (self.tempoInicio + self.enemyGenerationCooldown):
+            self.spawn_enemy(random.randint(1,2))
+            self.enemyOnCooldown = False
+
+    def randomizador_mana(self, tempo):
+        if not self.manaOnCooldown:
+            self.manaOnCooldown = True
+            self.manaTempoInicio = tempo
+
+            odds = random.randint(1,10)
+            if odds > 4: self.spawn_mana(type = 1)
+            elif odds > 1: self.spawn_mana(type = 2)
+            else: self.spawn_mana(type = 3)
+            
+        elif tempo > (self.manaTempoInicio + self.manaGenerationCooldown):
+            self.manaOnCooldown = False
+
     # Cria inimigos fora do campo de visão do player
-    def criar_inimigos(self, type=1):
+    def spawn_enemy(self, type=1):
         distancia = 1000
         angle = random.uniform(0, 2 * math.pi)
         x = self.player.rect.centerx + distancia * math.cos(angle)
@@ -138,25 +186,16 @@ class Game:
         elif type == 2:
             NewEnemy = Enemy((x, y), [self.attackable_sprites, self.camera], 50, image_path="assets/images/pokemon.png")
             self.enemies.append(NewEnemy)
-            
 
-    # Chama todas as funções de game
-    def run(self):
-        clock = pygame.time.Clock()
-        self.start_time = pygame.time.get_ticks()
+    # Cria mana fora do campo de visão do jogador
+    def spawn_mana(self, type=1):
+        distancia = 1000
+        angle = random.uniform(0, 2 * math.pi)
+        x = self.player.rect.centerx + distancia * math.cos(angle)
+        y = self.player.rect.centery + distancia * math.sin(angle)
 
-        while self.running:
-            self.events()
-            self.update()
-
-            # Limita a taxa de quadros (FPS)
-            clock.tick(60)
-
-            # Atualiza a tela
-            pygame.display.flip()
-
-        pygame.quit()
-        sys.exit()
+        #Cria os inimigos com base no tipo deles
+        NewMana = Mana((x, y), [self.camera, self.item_sprites], type, image_path="assets/images/wall.png")
 
 # Cria o game e roda ele
 if __name__ == "__main__":
