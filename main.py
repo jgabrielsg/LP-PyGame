@@ -7,6 +7,7 @@ import random
 from characters.player import Player
 from characters.enemy import Enemy
 from camera import CameraGroup
+from bullet import Bullet
 
 from block import Block
 from config import SCREEN_HEIGHT, SCREEN_WIDHT
@@ -35,7 +36,7 @@ class Game:
 
         # Game objects
         self.player = Player(initial_pos, self.camera, 100, image_path="assets/images/player.png")
-
+        self.projectiles = []
 
         # Controle de Inimigos
         self.enemies = []
@@ -52,6 +53,12 @@ class Game:
                 self.running = False
                 pygame.quit()
                 sys.exit()
+            
+            #Cuida dos tiros do player
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if self.running == True:
+                    PlayerProjectile = Bullet(self.player.hitbox.center, self.camera, 1, self.camera.offset, image_path="assets/images/bullet.png")
+                    self.projectiles.append(PlayerProjectile)
     
     # Qualquer atualização de posição ou animação ficam aqui.
     def update(self):
@@ -76,6 +83,12 @@ class Game:
             if (enemy.hitbox.colliderect(self.player.hitbox)):
                 # print("Colisão funfando")
                 pass
+        
+        for projectile in self.projectiles:
+            # Loops de todos os projéteis, pensei em tacar aqui a colisão mas talvez isso não seja mt ótimo, teria q iterar sobre todos os
+            # projéteis e todos os inimigos
+            #TODO ver como checar a interação dos tiros e dos inimigos
+            pass
 
         self.screen.fill((0,0,0)) 
 
