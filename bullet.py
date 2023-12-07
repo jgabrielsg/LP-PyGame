@@ -19,7 +19,7 @@ class Bullet(pygame.sprite.Sprite):
         self.speed = 20
 
         self.StartTimer = pygame.time.get_ticks()
-        self.DestroyTimer = 0
+        self.LifeSpam = 0
 
     def shoot(self):
         mousevec = pygame.math.Vector2(self.mousepos)
@@ -41,6 +41,6 @@ class Bullet(pygame.sprite.Sprite):
         self.shoot()
 
         #Destrói o tiro dps dele ir pra fora da tela
-        self.DestroyTimer = (pygame.time.get_ticks() - self.StartTimer)/1000
-        if self.DestroyTimer > 5:
+        self.LifeSpam = (pygame.time.get_ticks() - self.StartTimer)/1000
+        if self.LifeSpam > 5:
             self.kill()

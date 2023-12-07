@@ -6,6 +6,9 @@ import random
 
 from characters.player import Player
 from characters.enemy import Enemy_Tank, Enemy_Shooter
+
+from magics.lazerbeam import LazerBeam
+
 from camera import CameraGroup
 from bullet import Bullet
 from mana import Mana
@@ -63,7 +66,7 @@ class Game:
         # Controle de Upgrades
         self.Upgrading = False
         self.upgradeScreen = UpradeScreen(self.screen)
-        self.Powers = ["Dano Base"]
+        self.Magics = {"Dano Base": 0, "LazerBeam": 0}
 
     # Chama todas as funções de game
     def run(self):
@@ -76,11 +79,13 @@ class Game:
             if not self.Upgrading:
                 self.update()
             else:   
-                upgrade_1 = random.choice(self.Powers)
-                upgrade_2 = random.choice(self.Powers)
-                upgrade_3 = random.choice(self.Powers)
+                upgrade_1 = random.choice(list(self.Magics.keys()))
+                upgrade_2 = random.choice(list(self.Magics.keys()))
+                upgrade_3 = random.choice(list(self.Magics.keys()))
                 upgrade = self.upgradeScreen.run(self.camera.offset, upgrade_1, upgrade_2, upgrade_3)
-                print(f"upgrade feito em {upgrade}")
+                
+                self.Magics[upgrade] += 1
+
                 self.Upgrading = False
 
             # Limita a taxa de quadros (FPS)
@@ -103,7 +108,7 @@ class Game:
             #Cuida dos tiros do player
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if self.running == True:
-                    PlayerProjectile = Bullet(self.player.rect.center, [self.attack_sprites, self.camera], 1, self.camera.offset, image_path="assets/images/bullet.png")
+                    PlayerProjectile = Bullet(self.player.rect.center, [self.attack_sprites, self.camera], self.Magics["Dano Base"], self.camera.offset, image_path="assets/images/bullet.png")
                     self.projectiles.append(PlayerProjectile)
 
     def collisions(self):
@@ -124,7 +129,7 @@ class Game:
                 collision_sprites = pygame.sprite.spritecollide(attack_sprite, self.attackable_sprites, False)
                 if collision_sprites:
                     for target_sprite in collision_sprites:
-                        target_sprite.get_damage(self.player, attack_sprite.sprite_type)
+                        target_sprite.get_damage(self.player, attack_sprite)
                         if attack_sprite.sprite_type == 'bullet':
                             attack_sprite.kill()
     
@@ -144,6 +149,11 @@ class Game:
 
         for projectile in self.projectiles:
             projectile.update()
+
+        # Cria um lazer
+        # lazer = LazerBeam(self.player.rect.center, [self.attack_sprites, self.camera], self.Magics["LazerBeam"], image_path="assets/images/woodtile.png")
+        # lazer.CastMagic()
+        # self.projectiles.append(lazer)
 
         # Atualiza o player
         self.player.update()

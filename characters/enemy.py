@@ -26,9 +26,11 @@ class Enemy(Entity):
 
         # self.image = pygame.surface((64,64))
     
-    def get_damage(self, player, attack_type):
-        if attack_type == 'bullet':
+    def get_damage(self, player, damage_origin):
+        if damage_origin.sprite_type == 'bullet':
             self.health -= player.get_damage()
+        elif damage_origin.sprite_type == 'magic':
+            self.health -= damage_origin.get_damage()
     
     @abstractmethod
     def _atack(self,player): ...

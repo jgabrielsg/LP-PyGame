@@ -25,11 +25,11 @@ class UpradeScreen:
                 sys.exit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if self.OPTION_1.checkForInput(pygame.mouse.get_pos()):
-                    return "Option_1"
+                    return self.OPTION_1.get_text()
                 if self.OPTION_2.checkForInput(pygame.mouse.get_pos()):
-                    return "Option_2"
+                    return self.OPTION_2.get_text()
                 if self.OPTION_3.checkForInput(pygame.mouse.get_pos()):
-                    return "Option_3"
+                    return self.OPTION_3.get_text()
 
     def update(self):
         pass  # Atualize o estado do menu aqui, se necessário
