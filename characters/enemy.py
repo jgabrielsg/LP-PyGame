@@ -41,6 +41,8 @@ class Enemy_Tank(Enemy):
     
 class Enemy_Shooter(Enemy):
     def __init__(self, pos, groups):
-        super().__init__(pos, groups, 50, image_path="assets/images/applejack.png")
+        super().__init__(pos, groups, 50, image_path="assets/images/fantasma_1.png")
+        self.image = pygame.transform.scale(self.image, (int(self.image.get_width() * 1.5),
+                                                         int(self.image.get_height() * 1.5)))
 
-    def _atack(self,player): ...
+    def _atack(self, player): ...
