@@ -43,8 +43,28 @@ class Enemy_Tank(Enemy):
     
 class Enemy_Shooter(Enemy):
     def __init__(self, pos, groups):
-        super().__init__(pos, groups, 50, image_path="assets/images/fantasma_1.png")
-        self.image = pygame.transform.scale(self.image, (int(self.image.get_width() * 1.5),
-                                                         int(self.image.get_height() * 1.5)))
+        super().__init__(pos, groups, 50, image_path = "assets/images/fantasma_1.png")
+
+        self.animation_images = [pygame.image.load(f"assets/images/fantasma_{i}.png").convert_alpha() for i in range(1, 5)]
+
+        new_width = 90
+        new_height = 90 
+
+        self.animation_images = [pygame.transform.scale(image, (new_width, new_height)) for image in self.animation_images]
+        self.animation_index = 0
+
+        self.facing_left = False
+
+    def update(self):
+        super().update()
+        self.animate()
+
+    def animate(self):
+        animation_speed = 0.07
+        self.animation_index = (self.animation_index + animation_speed) % len(self.animation_images)
+        self.image = self.animation_images[int(self.animation_index)]
+
+        if self.direction.x < 0:
+            self.image = pygame.transform.flip(self.image, True, False)
 
     def _atack(self, player): ...
