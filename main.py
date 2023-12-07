@@ -50,6 +50,7 @@ class Game:
         self.manaGenerationCooldown = 1
         self.manaOnCooldown = False
         self.manaTempoInicio = 0
+        self.manaCount = 0
 
         # Controle de Inimigos
         self.enemies = []
@@ -115,6 +116,7 @@ class Game:
                 for mana in collision_sprites:
                     self.player.xp_up(mana.xp)
                     mana.kill()
+                    self.manaCount -= 1
         
         #Dano nos inimigos 
         if self.attack_sprites:
@@ -130,8 +132,8 @@ class Game:
     def update(self):
         tempo = (pygame.time.get_ticks() - self.start_time) / 1000
 
-        #Cria mana a cada dois segundos
-        self.randomizador_mana(tempo)
+        #Cria mana a cada dois segundos (se já não estiver muita mana no mapa)
+        if self.manaCount < 15: self.randomizador_mana(tempo)
         
         # Spawna os inimigos em intervalos de tempo aleatórios.
         self.randomizador_inimigos(tempo)
@@ -215,6 +217,7 @@ class Game:
 
         #Cria os inimigos com base no tipo deles
         NewMana = Mana((x, y), [self.camera, self.item_sprites], type, image_path="assets/images/wall.png")
+        self.manaCount +=1
 
 # Cria o game e roda ele
 if __name__ == "__main__":
