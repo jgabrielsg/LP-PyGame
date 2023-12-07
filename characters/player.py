@@ -35,7 +35,6 @@ class Player(Entity):
     def update(self):
         super().update()
         self.input()
-        print(self.xp)
 
     def get_damage(self):
         return self.base_damage
@@ -46,5 +45,5 @@ class Player(Entity):
     def xp_up(self, amount):
         self.xp += amount
 
-    def redefine_xp(self):
+    def reset_xp(self):
         self.xp = 0

@@ -27,3 +27,13 @@ class Button():
 			self.text = self.font.render(self.text_input, True, self.hovering_color)
 		else:
 			self.text = self.font.render(self.text_input, True, self.base_color)
+
+	def adjust_offset(self, offset):
+		self.x_pos += offset.x
+		self.y_pos += offset.y
+
+	def set_text(self, text):
+		self.text = self.font.render(text, True, self.base_color)
+		self.image = self.text
+		self.rect = self.image.get_rect(center=(self.x_pos, self.y_pos))
+		self.text_rect = self.text.get_rect(center=(self.x_pos, self.y_pos))

@@ -15,6 +15,7 @@ from config import SCREEN_HEIGHT, SCREEN_WIDHT
 
 from screens.main_menu import Menu
 from screens.options import Options
+from screens.upgrade_screen import UpradeScreen
 
 from music import Music
 
@@ -35,9 +36,10 @@ class Game:
 
         initial_pos = (SCREEN_WIDHT/2, SCREEN_HEIGHT/2)
 
-        # Game objects
+        # Player related
         self.player = Player(initial_pos, self.camera, 100, image_path="assets/images/player.png")
         self.projectiles = []
+        self.xp_levelup = 100
 
         # Cria grupos (listas) de sprites para iteração
         self.attack_sprites = pygame.sprite.Group()
@@ -45,7 +47,7 @@ class Game:
         self.item_sprites = pygame.sprite.Group()
 
         # Controle de Mana
-        self.manaGenerationCooldown = 2
+        self.manaGenerationCooldown = 1
         self.manaOnCooldown = False
         self.manaTempoInicio = 0
 
@@ -56,6 +58,11 @@ class Game:
         self.tempoInicio = 0
         
         self.running = True
+        
+        # Controle de Upgrades
+        self.Upgrading = False
+        self.upgradeScreen = UpradeScreen(self.screen)
+        self.Powers = ["Dano Base"]
 
     # Chama todas as funções de game
     def run(self):
@@ -64,7 +71,16 @@ class Game:
 
         while self.running:
             self.events()
-            self.update()
+
+            if not self.Upgrading:
+                self.update()
+            else:   
+                upgrade_1 = random.choice(self.Powers)
+                upgrade_2 = random.choice(self.Powers)
+                upgrade_3 = random.choice(self.Powers)
+                upgrade = self.upgradeScreen.run(self.camera.offset, upgrade_1, upgrade_2, upgrade_3)
+                print(f"upgrade feito em {upgrade}")
+                self.Upgrading = False
 
             # Limita a taxa de quadros (FPS)
             clock.tick(60)
@@ -124,12 +140,15 @@ class Game:
             enemy.set_direction(self.player)
             enemy.update()
 
-        # Descobri que o pygame chama sozinho todos os métodos update(), mas vou deixar só pra deixar bonito
         for projectile in self.projectiles:
             projectile.update()
 
         # Atualiza o player
         self.player.update()
+        if self.player.get_xp() > self.xp_levelup:
+            self.xp_levelup *= 1.1
+            self.player.reset_xp()
+            self.Upgrading = True
 
         self.collisions()
 

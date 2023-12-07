@@ -2,7 +2,6 @@ import pygame
 from button import Button
 import sys
 
-
 class Options:
     def __init__(self, screen):
         self.screen = screen
