@@ -1,4 +1,5 @@
 import pygame
+from abc import abstractmethod
 
 class Entity(pygame.sprite.Sprite):
     def __init__(self, pos, groups, health, image_path=None):

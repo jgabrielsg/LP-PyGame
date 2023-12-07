@@ -5,9 +5,9 @@ import math
 import random
 
 from characters.player import Player
-from characters.enemy import Enemy_Tank, Enemy_Shooter
+from characters.enemy import Enemy, Enemy_Tank, Enemy_Shooter
 from camera import CameraGroup
-from bullet import Bullet
+from bullet import Player_Bullet, Enemy_Bullet
 from mana import Mana
 
 from block import Block
@@ -102,7 +102,7 @@ class Game:
             #Cuida dos tiros do player
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if self.running == True:
-                    PlayerProjectile = Bullet(self.player.rect.center, [self.attack_sprites, self.camera], 1, self.camera.offset, image_path="assets/images/bullet.png")
+                    PlayerProjectile = Player_Bullet(self.player.rect.center, [self.attack_sprites, self.camera], 1, self.camera.offset, image_path="assets/images/bullet.png")
                     self.projectiles.append(PlayerProjectile)
 
     def collisions(self):
@@ -138,10 +138,13 @@ class Game:
 
         for enemy in self.enemies:
             enemy.set_direction(self.player)
-            enemy.update()
+            enemy.update(self.player.rect.center, [self.attack_sprites, self.camera], 1, self.camera.offset, image_path="assets/images/bullet.png")
 
         for projectile in self.projectiles:
-            projectile.update()
+            projectile.update()  
+
+        for projectile in Enemy.projectiles:
+            projectile.update(self.player) 
 
         # Atualiza o player
         self.player.update()

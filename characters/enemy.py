@@ -1,8 +1,11 @@
 import pygame
 from characters.entity import Entity
+from bullet import Enemy_Bullet
 from abc import abstractmethod
 
 class Enemy(Entity):
+    projectiles = []
+
     def __init__(self, pos, groups, health, image_path):
         super().__init__(pos, groups, health, image_path)
         self.sprite_type = 'enemy'
@@ -10,6 +13,8 @@ class Enemy(Entity):
         self.image = pygame.transform.scale(self.image, (self.image.get_width() // 10, self.image.get_height() // 10))
         self.speed = 2
         self.rect = self.image.get_rect(center = pos)
+        self.StartTimer = pygame.time.get_ticks()
+        self.AtackTimer = 0
 
     #Função que diz pro inimigo a direção do player
     def set_direction(self, player):
@@ -30,12 +35,12 @@ class Enemy(Entity):
         if attack_type == 'bullet':
             self.health -= player.get_damage()
     
-    @abstractmethod
-    def _atack(self,player): ...
-    
 class Enemy_Tank(Enemy):
     def __init__(self, pos, groups):
         super().__init__(pos, groups, 100, image_path="assets/images/pokemon.png")
+
+    def update(self, player_pos=None, group=None, health=None, camera=None, image_path=None):
+        super().update()
 
     def _atack(self,player): ...
     
@@ -53,9 +58,12 @@ class Enemy_Shooter(Enemy):
 
         self.facing_left = False
 
-    def update(self):
+    def update(self, player_pos, group, health, camera, image_path):
         super().update()
         self.animate()
+        self.AtackTimer = (pygame.time.get_ticks() - self.StartTimer)/1000
+        if self.AtackTimer >= 3:
+            self._atack(player_pos, group, health, camera, image_path)
 
     def animate(self):
         animation_speed = 0.07
@@ -65,4 +73,7 @@ class Enemy_Shooter(Enemy):
         if self.direction.x < 0:
             self.image = pygame.transform.flip(self.image, True, False)
 
-    def _atack(self, player): ...
+    def _atack(self, player_pos, group, health, camera, image_path): 
+        EnemyProjectile = Enemy_Bullet(player_pos, group, health, camera, image_path)
+        Enemy.projectiles.append(EnemyProjectile)
+        self.StartTimer = pygame.time.get_ticks()
