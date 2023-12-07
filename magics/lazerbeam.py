@@ -19,9 +19,6 @@ class LazerBeam(BaseMagic):
             self.damage = 100
         else: self.damage = 50
 
-        print(self.direction.x)
-        print(self.direction.y)
-
     def update(self):
         self.move()
 

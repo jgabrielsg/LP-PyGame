@@ -52,22 +52,27 @@ class Game:
         # Controle de Mana
         self.manaGenerationCooldown = 1
         self.manaOnCooldown = False
-        self.manaTempoInicio = 0
         self.manaCount = 0
+        self.manaTime = 0
 
         # Controle de Inimigos
         self.enemies = []
         self.enemyGenerationCooldown = 1
         self.enemyOnCooldown = True
-        self.tempoInicio = 0
-        
-        self.running = True
+        self.enemyTime = 0
         
         # Controle de Upgrades
         self.Upgrading = False
         self.upgradeScreen = UpradeScreen(self.screen)
         self.Magics = {"Dano Base": 0, "LazerBeam": 0}
 
+        # Controle de Poderes
+        self.lazerOnCooldown = False
+        self.LazerBeamCooldown = 7
+        self.LazerTime = 0
+
+        self.running = True
+        
     # Chama todas as funções de game
     def run(self):
         clock = pygame.time.Clock()
@@ -154,9 +159,8 @@ class Game:
             projectile.update()
 
         # Cria um lazer
-        # lazer = LazerBeam(self.player.rect.center, [self.attack_sprites, self.camera], self.Magics["LazerBeam"], image_path="assets/images/woodtile.png")
-        # lazer.CastMagic()
-        # self.projectiles.append(lazer)
+        if self.Magics["LazerBeam"] != 0:
+            self.Cast_Lazer(tempo)
 
         # Atualiza o player
         self.player.update()
@@ -180,30 +184,42 @@ class Game:
             self.enemyOnCooldown = True
 
             #Dificultando com o passar do tempo
-            if tempo > 120: self.enemyGenerationCooldown = 0.1
-            elif tempo > 90: self.enemyGenerationCooldown = 0.5
-            elif tempo > 60: self.enemyGenerationCooldown = random.randint(0,1)
-            elif tempo > 30: self.enemyGenerationCooldown = random.randint(0,2)
-            elif tempo > 15: self.enemyGenerationCooldown = random.randint(0,3)
+            if tempo > 90: self.enemyGenerationCooldown = 0.1
+            elif tempo > 60: self.enemyGenerationCooldown = 0.5
+            elif tempo > 30: self.enemyGenerationCooldown = random.randint(0,1)
+            elif tempo > 15: self.enemyGenerationCooldown = random.randint(0,2)
+            elif tempo > 7: self.enemyGenerationCooldown = random.randint(0,3)
             else: self.enemyGenerationCooldown = 3
 
-            self.tempoInicio = tempo
+            self.enemyTime = tempo
 
-        elif tempo > (self.tempoInicio + self.enemyGenerationCooldown):
+        elif tempo > (self.enemyTime + self.enemyGenerationCooldown):
             self.spawn_enemy(random.randint(1,2))
             self.enemyOnCooldown = False
+
+    def Cast_Lazer(self, tempo):
+        if not self.lazerOnCooldown:
+            self.lazerOnCooldown = True
+            self.LazerTime = tempo
+
+            lazer = LazerBeam(self.player.rect.center, [self.attack_sprites, self.camera], self.Magics["LazerBeam"], image_path="assets/images/woodtile.png")
+            lazer.CastMagic()
+            self.projectiles.append(lazer)
+
+        elif tempo > (self.LazerTime + self.LazerBeamCooldown):
+            self.lazerOnCooldown = False
 
     def randomizador_mana(self, tempo):
         if not self.manaOnCooldown:
             self.manaOnCooldown = True
-            self.manaTempoInicio = tempo
+            self.manaTime = tempo
 
             odds = random.randint(1,10)
             if odds > 4: self.spawn_mana(type = 1)
             elif odds > 1: self.spawn_mana(type = 2)
             else: self.spawn_mana(type = 3)
             
-        elif tempo > (self.manaTempoInicio + self.manaGenerationCooldown):
+        elif tempo > (self.manaTime + self.manaGenerationCooldown):
             self.manaOnCooldown = False
 
     # Cria inimigos fora do campo de visão do player
