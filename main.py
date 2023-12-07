@@ -143,6 +143,9 @@ class Game:
         # Spawna os inimigos em intervalos de tempo aleatórios.
         self.randomizador_inimigos(tempo)
 
+        # Ativa as magias em tempos aleatórios
+        # self.randomizador_poderes(tempo) #TODO criar uma classe p isso
+
         for enemy in self.enemies:
             enemy.set_direction(self.player)
             enemy.update()
