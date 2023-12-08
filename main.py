@@ -46,6 +46,7 @@ class Game:
 
         # Cria grupos (listas) de sprites para iteração
         self.attack_sprites = pygame.sprite.Group()
+        self.damagePlayer_sprites = pygame.sprite.Group()
         self.attackable_sprites = pygame.sprite.Group()
         self.item_sprites = pygame.sprite.Group()
 
@@ -113,7 +114,7 @@ class Game:
             #Cuida dos tiros do player
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if self.running == True:
-                    PlayerProjectile = Bullet(self.player.rect.center, [self.attack_sprites, self.camera], self.Magics["Dano Base"], self.camera.offset, image_path="assets/images/bullet.png")
+                    PlayerProjectile = Bullet(self.player.rect.center, pygame.mouse.get_pos(), [self.attack_sprites, self.camera], self.Magics["Dano Base"], self.camera.offset, image_path="assets/images/bullet.png")
                     self.projectiles.append(PlayerProjectile)
 
     def collisions(self):
@@ -148,12 +149,16 @@ class Game:
         # Spawna os inimigos em intervalos de tempo aleatórios.
         self.randomizador_inimigos(tempo)
 
-        # Ativa as magias em tempos aleatórios
-        # self.randomizador_poderes(tempo) #TODO criar uma classe p isso
-
+        # Update nos inimigos
         for enemy in self.enemies:
             enemy.set_direction(self.player)
             enemy.update()
+
+            # Inimigos Shooters atiram
+            if enemy.shouldShoot:
+                EnemyBullet = Bullet(enemy.rect.center, self.player.rect.center, [self.camera, self.damagePlayer_sprites], 1, image_path="assets/images/bullet.png")
+                self.projectiles.append(EnemyBullet)
+                enemy.shouldShoot = False
 
         for projectile in self.projectiles:
             projectile.update()
@@ -197,18 +202,7 @@ class Game:
             self.spawn_enemy(random.randint(1,2))
             self.enemyOnCooldown = False
 
-    def Cast_Lazer(self, tempo):
-        if not self.lazerOnCooldown:
-            self.lazerOnCooldown = True
-            self.LazerTime = tempo
-
-            lazer = LazerBeam(self.player.rect.center, [self.attack_sprites, self.camera], self.Magics["LazerBeam"], image_path="assets/images/woodtile.png")
-            lazer.CastMagic()
-            self.projectiles.append(lazer)
-
-        elif tempo > (self.LazerTime + self.LazerBeamCooldown):
-            self.lazerOnCooldown = False
-
+    #Define quando uma mana deve ser spawnada 
     def randomizador_mana(self, tempo):
         if not self.manaOnCooldown:
             self.manaOnCooldown = True
@@ -231,10 +225,10 @@ class Game:
 
         #Cria os inimigos com base no tipo deles
         if type == 1:
-            NewEnemy = Enemy_Tank((x, y), [self.attackable_sprites, self.camera])
+            NewEnemy = Enemy_Tank((x, y), [self.attackable_sprites, self.camera, self.damagePlayer_sprites])
             self.enemies.append(NewEnemy)
         elif type == 2:
-            NewEnemy = Enemy_Shooter((x, y), [self.attackable_sprites, self.camera])
+            NewEnemy = Enemy_Shooter((x, y), [self.attackable_sprites, self.camera, self.damagePlayer_sprites])
             self.enemies.append(NewEnemy)
 
     # Cria mana fora do campo de visão do jogador
@@ -247,6 +241,19 @@ class Game:
         #Cria os inimigos com base no tipo deles
         NewMana = Mana((x, y), [self.camera, self.item_sprites], type, image_path="assets/images/wall.png")
         self.manaCount +=1
+
+    #Define quando o lazer será
+    def Cast_Lazer(self, tempo):
+        if not self.lazerOnCooldown:
+            self.lazerOnCooldown = True
+            self.LazerTime = tempo
+
+            lazer = LazerBeam(self.player.rect.center, [self.attack_sprites, self.camera], self.Magics["LazerBeam"], image_path="assets/images/woodtile.png")
+            lazer.CastMagic()
+            self.projectiles.append(lazer)
+
+        elif tempo > (self.LazerTime + self.LazerBeamCooldown):
+            self.lazerOnCooldown = False
 
 # Cria o game e roda ele
 if __name__ == "__main__":

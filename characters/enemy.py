@@ -10,6 +10,7 @@ class Enemy(Entity):
         self.image = pygame.transform.scale(self.image, (self.image.get_width() // 10, self.image.get_height() // 10))
         self.speed = 2
         self.rect = self.image.get_rect(center = pos)
+        self.shouldShoot = False # For shooterEnemies
 
     #Função que diz pro inimigo a direção do player
     def set_direction(self, player):
@@ -55,9 +56,18 @@ class Enemy_Shooter(Enemy):
 
         self.facing_left = False
 
+        self.cooldown = 5000 # Milisegundos
+        self.LastShot = 0
+        # pygame.time.get_ticks()
+
     def update(self):
         super().update()
         self.animate()
+
+        if not self.shouldShoot:
+            if (pygame.time.get_ticks() - self.LastShot) > self.cooldown:
+                self.shouldShoot = True
+                self.LastShot = pygame.time.get_ticks()
 
     def animate(self):
         animation_speed = 0.07

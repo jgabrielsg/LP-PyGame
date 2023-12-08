@@ -1,7 +1,7 @@
 import pygame
 
 class Bullet(pygame.sprite.Sprite):
-    def __init__(self, pos, groups, level, offset, image_path=None):
+    def __init__(self, pos, target_pos, groups, level, offset = pygame.math.Vector2(), image_path=None):
         super().__init__(groups)
         self.sprite_type = 'bullet'
         self.level = level
@@ -11,23 +11,23 @@ class Bullet(pygame.sprite.Sprite):
         self.direction = pygame.math.Vector2()
 
         #Pega a posição ajustada do mouse de acordo com a camera
-        mouse_pos = pygame.mouse.get_pos()
-        self.mousepos = (mouse_pos[0] + self.cameraOffset.x, mouse_pos[1] + self.cameraOffset.y)
+        self.target_pos = target_pos
+        self.target_pos = (target_pos[0] + self.cameraOffset.x, target_pos[1] + self.cameraOffset.y)
 
         self.image = pygame.image.load(image_path).convert_alpha()
         self.rect = self.image.get_rect(center = pos)
-        self.speed = 20
+        self.speed = 10
 
         self.StartTimer = pygame.time.get_ticks()
         self.LifeSpam = 0
 
     def shoot(self):
-        mousevec = pygame.math.Vector2(self.mousepos)
+        target_vec = pygame.math.Vector2(self.target_pos)
         player_vec = pygame.math.Vector2(self.pos)
 
         #Checa se o mouse não está em cima do player
-        if (mousevec - player_vec).magnitude() > 0:
-            self.direction = (mousevec - player_vec).normalize()
+        if (target_vec - player_vec).magnitude() > 0:
+            self.direction = (target_vec - player_vec).normalize()
         else:
             self.direction = pygame.math.Vector2()
 
