@@ -49,7 +49,7 @@ class Bullet(pygame.sprite.Sprite):
             self.kill()
 
 class Boss_Bullet(Bullet):
-    def __init__(self, pos, target_pos, groups, level, offset = pygame.math.Vector2(), image_path=None):
+    def __init__(self, type, pos, target_pos, groups, level, offset = pygame.math.Vector2(), image_path=None):
         super().__init__(pos, target_pos, groups, level, offset = offset, image_path=image_path)
         self.image = pygame.transform.scale(self.image, (self.image.get_width() * 5, self.image.get_height() * 5))
         self.updated = False
@@ -58,11 +58,17 @@ class Boss_Bullet(Bullet):
         self.vx = 0
         self.vy = 0
 
-    def shoot(self):
-        self.vx = 2 * math.cos(Boss.angulo)
-        self.vy = 2 * math.sin(Boss.angulo)
+        self.type = type
 
-        Boss.angulo = Boss.angulo + 0.50
+    def shoot(self):
+        if self.type == 1:
+            self.vx = 2 * math.cos(Boss.angulo)
+            self.vy = 2 * math.sin(Boss.angulo)
+        else:
+            self.vx = 2 * math.cos(Boss.angulo + math.pi)
+            self.vy = 2 * math.sin(Boss.angulo + math.pi)
+
+        Boss.angulo = Boss.angulo + 0.25
 
     def update(self):
         if not self.updated:

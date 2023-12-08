@@ -167,9 +167,12 @@ class Game:
                     enemy.shouldShoot = False
             else: 
                 if enemy.shouldShoot:
-                    EnemyBullet = Boss_Bullet(enemy.rect.center, self.player.rect.center, [self.camera, self.damagePlayer_sprites], 1, image_path="assets/images/bullet.png")
+                    EnemyBullet = Boss_Bullet(1,enemy.rect.center, self.player.rect.center, [self.camera, self.damagePlayer_sprites], 1, image_path="assets/images/bullet.png")
+                    EnemyBullet = Boss_Bullet(2,enemy.rect.center, self.player.rect.center, [self.camera, self.damagePlayer_sprites], 1, image_path="assets/images/bullet.png")
+                    self.projectiles.append(EnemyBullet)
                     self.projectiles.append(EnemyBullet)
                     enemy.shouldShoot = False
+                    enemy.laser(self.player)
 
         for projectile in self.projectiles:
             if projectile.LifeSpam > 5:
@@ -196,7 +199,7 @@ class Game:
         self.camera.custom_draw()  
 
     def randomizador_inimigos(self, tempo):
-        if self.enemyTime <= 60:
+        if self.enemyTime <= 0:
             if not self.enemyOnCooldown:
 
                 self.enemyOnCooldown = True
