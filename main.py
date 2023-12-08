@@ -243,6 +243,8 @@ class Game:
             self.spawn_enemy(5)
             self.LastBossTime = tempo
 
+        
+
     #Define quando uma mana deve ser spawnada 
     def randomizador_mana(self, tempo):
         if tempo > (self.manaTime + self.manaGenerationCooldown):

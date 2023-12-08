@@ -9,7 +9,7 @@ class Enemy(Entity):
         self.sprite_type = 'enemy'
 
         self.image = pygame.transform.scale(self.image, (self.image.get_width() // 10, self.image.get_height() // 10))
-        self.speed = 4
+        self.speed = 3
         self.rect = self.image.get_rect(center = pos)
         self.shouldShoot = False # For shooterEnemies
         self.IsBoss = False
