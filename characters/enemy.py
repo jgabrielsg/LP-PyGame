@@ -35,9 +35,6 @@ class Enemy(Entity):
         elif damage_origin.sprite_type == 'magic':
             self.health -= damage_origin.get_damage()
     
-    @abstractmethod
-    def _atack(self,player): ...
-    
 class Enemy_Tank(Enemy):
     def __init__(self, pos, groups):
         super().__init__(pos, groups, 50, image_path = "assets/images/ogro_1.png")
@@ -63,8 +60,6 @@ class Enemy_Tank(Enemy):
 
         if self.direction.x < 0:
             self.image = pygame.transform.flip(self.image, True, False)
-
-    def _atack(self,player): ...
     
 class Enemy_Shooter(Enemy):
     def __init__(self, pos, groups):
@@ -100,8 +95,6 @@ class Enemy_Shooter(Enemy):
 
         if self.direction.x < 0:
             self.image = pygame.transform.flip(self.image, True, False)
-
-    def _atack(self, player): ...
 
 class Boss(Enemy):
     angulo = 0
