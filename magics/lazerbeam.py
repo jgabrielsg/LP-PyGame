@@ -16,8 +16,8 @@ class LazerBeam(BaseMagic):
     def CastMagic(self):
         super().CastMagic()
         if self.level > 3: 
-            self.damage = 100
-        else: self.damage = 50
+            self.damage = 30
+        else: self.damage = 10
 
     def update(self):
         self.move()
