@@ -10,7 +10,7 @@ from characters.enemy import Boss, Enemy_Tank, Enemy_Shooter
 from magics.lazerbeam import LazerBeam
 
 from camera import CameraGroup
-from bullet import Bullet, Boss_Bullet
+from bullet import Bullet, Boss_Bullet, Boss_Laser
 from mana import Mana
 
 from block import Block
@@ -167,12 +167,16 @@ class Game:
                     enemy.shouldShoot = False
             else: 
                 if enemy.shouldShoot:
-                    EnemyBullet = Boss_Bullet(1,enemy.rect.center, self.player.rect.center, [self.camera, self.damagePlayer_sprites], 1, image_path="assets/images/bullet.png")
-                    EnemyBullet = Boss_Bullet(2,enemy.rect.center, self.player.rect.center, [self.camera, self.damagePlayer_sprites], 1, image_path="assets/images/bullet.png")
-                    self.projectiles.append(EnemyBullet)
-                    self.projectiles.append(EnemyBullet)
+                    EnemyBullet1 = Boss_Bullet(1,enemy.rect.center, self.player.rect.center, [self.camera, self.damagePlayer_sprites], 1, image_path="assets/images/bullet.png")
+                    EnemyBullet2 = Boss_Bullet(2,enemy.rect.center, self.player.rect.center, [self.camera, self.damagePlayer_sprites], 1, image_path="assets/images/bullet.png")
+                    self.projectiles.append(EnemyBullet1)
+                    self.projectiles.append(EnemyBullet2)
                     enemy.shouldShoot = False
-                    enemy.laser(self.player)
+
+                if enemy.shouldLaser:
+                    EnemyLaser = Boss_Laser(self.player.rect.center, [self.camera, self.damagePlayer_sprites], 1)
+                    self.projectiles.append(EnemyLaser)
+                    enemy.shouldLaser = False
 
         for projectile in self.projectiles:
             if projectile.LifeSpam > 5:
@@ -199,7 +203,7 @@ class Game:
         self.camera.custom_draw()  
 
     def randomizador_inimigos(self, tempo):
-        if self.enemyTime <= 0:
+        if self.enemyTime <= 60:
             if not self.enemyOnCooldown:
 
                 self.enemyOnCooldown = True

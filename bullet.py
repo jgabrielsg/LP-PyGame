@@ -82,3 +82,23 @@ class Boss_Bullet(Bullet):
         self.LifeSpam = (pygame.time.get_ticks() - self.StartTimer)/1000
         if self.LifeSpam > 5:
             self.kill()
+
+class Boss_Laser(pygame.sprite.Sprite):
+    def __init__(self, pos, groups, level):
+        super().__init__(groups)
+        self.sprite_type = 'bullet'
+        self.level = level
+        self.pos = pos
+
+        self.image = pygame.image.load("assets/images/laser.png").convert_alpha()
+        self.image = pygame.transform.scale(self.image, (self.image.get_width() * 100, self.image.get_height() * 2))
+        self.rect = self.image.get_rect(center = pos)
+
+        self.StartTimer = pygame.time.get_ticks()
+        self.LifeSpam = 0
+    
+    def update(self):
+        #Destrói o tiro dps de um tempo
+        self.LifeSpam = (pygame.time.get_ticks() - self.StartTimer)/1000
+        if self.LifeSpam > 2:
+            self.kill()

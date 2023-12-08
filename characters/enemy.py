@@ -108,11 +108,15 @@ class Boss(Enemy):
         self.speed = 1
         self.rect = self.image.get_rect(center = pos)
         self.shouldShoot = False # For shooterEnemies
+        self.shouldLaser = False
 
         self.IsBoss = True
 
         self.cooldown = 250 # Milisegundos
         self.LastShot = 0
+
+        self.laser_cooldown = 3000
+        self.LastLaser = 0
 
     def update(self):
         super().update()
@@ -122,6 +126,12 @@ class Boss(Enemy):
             if (pygame.time.get_ticks() - self.LastShot) > self.cooldown:
                 self.shouldShoot = True
                 self.LastShot = pygame.time.get_ticks()
+
+        if not self.shouldLaser:
+            if (pygame.time.get_ticks() - self.LastLaser) > self.laser_cooldown:
+                self.shouldLaser = True
+                self.LastLaser = pygame.time.get_ticks()
+
 
     # def laser(self, player):
     #     laser = []
