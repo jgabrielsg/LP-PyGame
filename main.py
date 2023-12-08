@@ -53,6 +53,7 @@ class Game:
 
         # Controle de Inimigos
         self.enemies = []
+        self.shooterEnemies = []
         self.enemyGenerationCooldown = 1
         self.enemyOnCooldown = True
         self.tempoInicio = 0
@@ -136,15 +137,19 @@ class Game:
         # Spawna os inimigos em intervalos de tempo aleatórios.
         self.randomizador_inimigos(tempo)
 
+        for enemy in self.shooterEnemies:
+            enemy.set_direction(self.player)
+            enemy.update2(self.camera, self.camera.offset, image_path="assets/images/bullet.png")
+
         for enemy in self.enemies:
             enemy.set_direction(self.player)
-            enemy.update(self.player.rect.center, [self.attack_sprites, self.camera], 1, self.camera.offset, image_path="assets/images/bullet.png")
+            enemy.update()
 
         for projectile in self.projectiles:
             projectile.update()  
 
         for projectile in Enemy.projectiles:
-            projectile.update(self.player) 
+            projectile.update() 
 
         # Atualiza o player
         self.player.update()
@@ -158,7 +163,7 @@ class Game:
         self.screen.fill((0,0,0)) 
 
         # Cuida da câmera
-        self.camera.update()
+        self.camera.update() #Update da classe mãe Group
         self.camera.center_target_camera(self.player)
         self.camera.custom_draw()  
 
@@ -207,7 +212,7 @@ class Game:
             self.enemies.append(NewEnemy)
         elif type == 2:
             NewEnemy = Enemy_Shooter((x, y), [self.attackable_sprites, self.camera])
-            self.enemies.append(NewEnemy)
+            self.shooterEnemies.append(NewEnemy)
 
     # Cria mana fora do campo de visão do jogador
     def spawn_mana(self, type=1):
