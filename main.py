@@ -196,7 +196,7 @@ class Game:
         self.camera.custom_draw()  
 
     def randomizador_inimigos(self, tempo):
-        if self.enemyTime <= 5:
+        if self.enemyTime <= 60:
             if not self.enemyOnCooldown:
 
                 self.enemyOnCooldown = True
