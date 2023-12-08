@@ -38,6 +38,7 @@ class Enemy(Entity):
 class Enemy_Tank(Enemy):
     def __init__(self, pos, groups):
         super().__init__(pos, groups, 50, image_path = "assets/images/ogro_1.png")
+        self.speed = 1
 
         self.animation_images = [pygame.image.load(f"assets/images/ogro_{i}.png").convert_alpha() for i in range(1, 5)]
 
@@ -122,10 +123,10 @@ class Boss(Enemy):
                 self.shouldShoot = True
                 self.LastShot = pygame.time.get_ticks()
 
-    def laser(self, player):
-        laser = []
-        laser_image = pygame.image.load("assets/images/laser.png").convert_alpha()
-        laser_image = pygame.transform.scale(laser_image, (laser_image.get_width() * 100, laser_image.get_height() * 5))
-        rect = laser_image.get_rect(center = player.rect.center)
+    # def laser(self, player):
+    #     laser = []
+    #     laser_image = pygame.image.load("assets/images/laser.png").convert_alpha()
+    #     laser_image = pygame.transform.scale(laser_image, (laser_image.get_width() * 100, laser_image.get_height() * 5))
+    #     rect = laser_image.get_rect(center = player.rect.center)
 
         
