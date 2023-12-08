@@ -1,6 +1,7 @@
 import pygame
 from characters.entity import Entity
 from abc import abstractmethod
+import math
 
 class Enemy(Entity):
     def __init__(self, pos, groups, health, image_path):
@@ -11,6 +12,7 @@ class Enemy(Entity):
         self.speed = 2
         self.rect = self.image.get_rect(center = pos)
         self.shouldShoot = False # For shooterEnemies
+        self.IsBoss = False
 
     #Função que diz pro inimigo a direção do player
     def set_direction(self, player):
@@ -80,6 +82,8 @@ class Enemy_Shooter(Enemy):
     def _atack(self, player): ...
 
 class Boss(Enemy):
+    angulo = 0
+
     def __init__(self, pos, groups):
         super().__init__(pos, groups, 1000, image_path = "assets/images/boss.jpg")
         self.sprite_type = 'enemy'
@@ -88,3 +92,19 @@ class Boss(Enemy):
         self.speed = 1
         self.rect = self.image.get_rect(center = pos)
         self.shouldShoot = False # For shooterEnemies
+
+        self.IsBoss = True
+
+        self.cooldown = 1000 # Milisegundos
+        self.LastShot = 0
+
+    def update(self):
+        super().update()
+        # self.animate()
+
+        if not self.shouldShoot:
+            if (pygame.time.get_ticks() - self.LastShot) > self.cooldown:
+                self.shouldShoot = True
+                self.LastShot = pygame.time.get_ticks()
+
+        

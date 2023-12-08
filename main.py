@@ -10,7 +10,7 @@ from characters.enemy import Boss, Enemy_Tank, Enemy_Shooter
 from magics.lazerbeam import LazerBeam
 
 from camera import CameraGroup
-from bullet import Bullet
+from bullet import Bullet, Boss_Bullet
 from mana import Mana
 
 from block import Block
@@ -160,10 +160,16 @@ class Game:
             enemy.update()
 
             # Inimigos Shooters atiram
-            if enemy.shouldShoot:
-                EnemyBullet = Bullet(enemy.rect.center, self.player.rect.center, [self.camera, self.damagePlayer_sprites], 1, image_path="assets/images/bullet.png")
-                self.projectiles.append(EnemyBullet)
-                enemy.shouldShoot = False
+            if not enemy.IsBoss:
+                if enemy.shouldShoot:
+                    EnemyBullet = Bullet(enemy.rect.center, self.player.rect.center, [self.camera, self.damagePlayer_sprites], 1, image_path="assets/images/bullet.png")
+                    self.projectiles.append(EnemyBullet)
+                    enemy.shouldShoot = False
+            else: 
+                if enemy.shouldShoot:
+                    EnemyBullet = Boss_Bullet(enemy.rect.center, self.player.rect.center, [self.camera, self.damagePlayer_sprites], 1, image_path="assets/images/bullet.png")
+                    self.projectiles.append(EnemyBullet)
+                    enemy.shouldShoot = False
 
         for projectile in self.projectiles:
             if projectile.LifeSpam > 5:
