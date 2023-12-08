@@ -78,3 +78,13 @@ class Enemy_Shooter(Enemy):
             self.image = pygame.transform.flip(self.image, True, False)
 
     def _atack(self, player): ...
+
+class Boss(Enemy):
+    def __init__(self, pos, groups):
+        super().__init__(pos, groups, 1000, image_path = "assets/images/boss.jpg")
+        self.sprite_type = 'enemy'
+
+        self.image = pygame.transform.scale(self.image, (self.image.get_width() * 5, self.image.get_height() * 5))
+        self.speed = 1
+        self.rect = self.image.get_rect(center = pos)
+        self.shouldShoot = False # For shooterEnemies

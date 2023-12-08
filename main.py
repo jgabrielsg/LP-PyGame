@@ -5,7 +5,7 @@ import math
 import random
 
 from characters.player import Player
-from characters.enemy import Enemy_Tank, Enemy_Shooter
+from characters.enemy import Boss, Enemy_Tank, Enemy_Shooter
 
 from magics.lazerbeam import LazerBeam
 
@@ -61,6 +61,7 @@ class Game:
         self.enemyGenerationCooldown = 1
         self.enemyOnCooldown = True
         self.enemyTime = 0
+        self.BossSpawned = False
         
         # Controle de Upgrades
         self.Upgrading = False
@@ -184,23 +185,27 @@ class Game:
         self.camera.custom_draw()  
 
     def randomizador_inimigos(self, tempo):
-        if not self.enemyOnCooldown:
+        if self.enemyTime <= 5:
+            if not self.enemyOnCooldown:
 
-            self.enemyOnCooldown = True
+                self.enemyOnCooldown = True
 
-            #Dificultando com o passar do tempo
-            if tempo > 90: self.enemyGenerationCooldown = 0.1
-            elif tempo > 60: self.enemyGenerationCooldown = 0.5
-            elif tempo > 30: self.enemyGenerationCooldown = random.randint(0,1)
-            elif tempo > 15: self.enemyGenerationCooldown = random.randint(0,2)
-            elif tempo > 7: self.enemyGenerationCooldown = random.randint(0,3)
-            else: self.enemyGenerationCooldown = 3
+                #Dificultando com o passar do tempo
+                if tempo > 90: self.enemyGenerationCooldown = 0.1
+                elif tempo > 60: self.enemyGenerationCooldown = 0.5
+                elif tempo > 30: self.enemyGenerationCooldown = random.randint(0,1)
+                elif tempo > 15: self.enemyGenerationCooldown = random.randint(0,2)
+                elif tempo > 7: self.enemyGenerationCooldown = random.randint(0,3)
+                else: self.enemyGenerationCooldown = 3
 
-            self.enemyTime = tempo
+                self.enemyTime = tempo
 
-        elif tempo > (self.enemyTime + self.enemyGenerationCooldown):
-            self.spawn_enemy(random.randint(1,2))
-            self.enemyOnCooldown = False
+            elif tempo > (self.enemyTime + self.enemyGenerationCooldown):
+                self.spawn_enemy(random.randint(1,2))
+                self.enemyOnCooldown = False
+        elif not self.BossSpawned:
+            self.spawn_enemy(3)
+            self.BossSpawned = True
 
     #Define quando uma mana deve ser spawnada 
     def randomizador_mana(self, tempo):
@@ -229,6 +234,9 @@ class Game:
             self.enemies.append(NewEnemy)
         elif type == 2:
             NewEnemy = Enemy_Shooter((x, y), [self.attackable_sprites, self.camera, self.damagePlayer_sprites])
+            self.enemies.append(NewEnemy)
+        elif type == 3:
+            NewEnemy = Boss((x, y), [self.attackable_sprites, self.camera, self.damagePlayer_sprites])
             self.enemies.append(NewEnemy)
 
     # Cria mana fora do campo de visão do jogador
