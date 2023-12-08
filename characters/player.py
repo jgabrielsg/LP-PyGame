@@ -9,7 +9,7 @@ class Player(Entity):
         self.original_image = pygame.transform.scale(self.image, (self.image.get_width() // 1.2, self.image.get_height() // 1.2))
         self.image = self.original_image
 
-        self.speed = 3
+        self.speed = 5
         self.base_damage = 10
         self.xp = 0
 

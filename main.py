@@ -150,14 +150,12 @@ class Game:
         # Spawna os inimigos em intervalos de tempo aleatórios.
         self.randomizador_inimigos(tempo)
 
-        # Update nos inimigos
+        # Cuida dos inimigos 
         for enemy in self.enemies:
             if enemy.health <= 0:
                 self.enemies.remove(enemy)
                 break
-
             enemy.set_direction(self.player)
-            enemy.update()
 
             # Inimigos Shooters atiram
             if enemy.shouldShoot:
@@ -173,8 +171,7 @@ class Game:
         if self.Magics["LazerBeam"] != 0:
             self.Cast_Lazer(tempo)
 
-        # Atualiza o player
-        self.player.update()
+        # Aumenta o nível do player
         if self.player.get_xp() > self.xp_levelup:
             self.xp_levelup *= 1.1
             self.player.reset_xp()
@@ -185,7 +182,8 @@ class Game:
         self.screen.fill((0,0,0)) 
 
         # Cuida da câmera
-        self.camera.update()
+        self.camera.update() # O camera.update() dá update em todos os outros sprites que estão no seu grupo por default do pygame
+                             # então não é necessário chamar self.player.update(), por exemplo
         self.camera.center_target_camera(self.player)
         self.camera.custom_draw()  
 
