@@ -9,7 +9,7 @@ class Enemy(Entity):
         self.sprite_type = 'enemy'
 
         self.image = pygame.transform.scale(self.image, (self.image.get_width() // 10, self.image.get_height() // 10))
-        self.speed = 3
+        self.speed = 4
         self.rect = self.image.get_rect(center = pos)
         self.shouldShoot = False # For shooterEnemies
         self.IsBoss = False
@@ -38,7 +38,7 @@ class Enemy(Entity):
 class Enemy_Tank(Enemy):
     def __init__(self, pos, groups, animation_images):
         super().__init__(pos, groups, 50, image_path="assets/images/ogro_1.png")
-        self.speed = 2
+        self.speed = 1.5
 
         # Usando as imagens pré carregadas
         self.animation_images = animation_images.copy()

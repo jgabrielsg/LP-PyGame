@@ -226,7 +226,12 @@ class Game:
         self.camera.custom_draw()  
 
     def randomizador_inimigos(self, tempo):
-        if tempo > (self.enemyTime + self.enemyGenerationCooldown):
+        if (tempo - self.LastBossTime) > 30:
+            if len(self.enemies) == 0:
+                self.spawn_enemy(5)
+                self.LastBossTime = tempo
+
+        elif tempo > (self.enemyTime + self.enemyGenerationCooldown):
 
             self.enemyTime = tempo
             self.spawn_enemy(random.randint(1,4))
@@ -238,10 +243,6 @@ class Game:
             elif tempo > 15: self.enemyGenerationCooldown = random.randint(0,2)
             elif tempo > 7: self.enemyGenerationCooldown = random.randint(0,3)
             else: self.enemyGenerationCooldown = 3
-
-        if (tempo - self.LastBossTime) > 60:
-            self.spawn_enemy(5)
-            self.LastBossTime = tempo
 
         
 
