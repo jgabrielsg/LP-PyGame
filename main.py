@@ -79,11 +79,10 @@ class Game:
         self.Magics = {"Dano Base": 0, "LazerBeam": 0, "Fire Rate": 0}
 
         # Controle de Poderes
-        self.lazerOnCooldown = False
-        self.LazerBeamCooldown = 7
+        self.LazerBeamCooldown = 3
         self.LazerTime = 0
 
-        self.playerCooldown = 1
+        self.playerCooldown = 0.3
         self.playerLastShot = 0
 
         self.running = True
@@ -106,7 +105,8 @@ class Game:
                 
                 self.Magics[upgrade] += 1
 
-                self.playerCooldown = 1 - (self.Magics["Fire Rate"]/10)
+                self.playerCooldown = 1 - (self.Magics["Fire Rate"]/20)
+                self.LazerBeamCooldown = 3 - (self.Magics["LazerBeam"]/3)
 
                 self.Upgrading = False
 
@@ -138,6 +138,14 @@ class Game:
 
     def collisions(self):
         #Função que cuida das colisões de dano (inimigo - player), (tiro - inimigo)
+
+        #Dano no Player
+        collision_sprites = pygame.sprite.spritecollide(self.player, self.damagePlayer_sprites, False)
+        if collision_sprites:
+            for enemy_sprite in collision_sprites:
+                if enemy_sprite.sprite_type == 'bullet':
+                    enemy_sprite.kill()
+                self.player.health -= 10
         
         #Coleta de Mana
         if self.item_sprites:
@@ -276,16 +284,11 @@ class Game:
 
     #Define quando o lazer será
     def Cast_Lazer(self, tempo):
-        if not self.lazerOnCooldown:
-            self.lazerOnCooldown = True
+        if tempo > (self.LazerTime + self.LazerBeamCooldown):
             self.LazerTime = tempo
-
             lazer = LazerBeam(self.player.rect.center, [self.attack_sprites, self.camera], self.Magics["LazerBeam"], image_path="assets/images/woodtile.png")
             lazer.CastMagic()
             self.projectiles.append(lazer)
-
-        elif tempo > (self.LazerTime + self.LazerBeamCooldown):
-            self.lazerOnCooldown = False
 
 # Cria o game e roda ele
 if __name__ == "__main__":
