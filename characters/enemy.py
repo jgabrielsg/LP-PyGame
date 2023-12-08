@@ -38,6 +38,7 @@ class Enemy(Entity):
 class Enemy_Tank(Enemy):
     def __init__(self, pos, groups):
         super().__init__(pos, groups, 50, image_path = "assets/images/ogro_1.png")
+        self.speed = 1
 
         self.animation_images = [pygame.image.load(f"assets/images/ogro_{i}.png").convert_alpha() for i in range(1, 5)]
 
