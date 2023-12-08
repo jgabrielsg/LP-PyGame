@@ -19,11 +19,6 @@ class Entity(pygame.sprite.Sprite):
         self.rect.x += self.direction.x * speed
         self.rect.y += self.direction.y * speed
 
-    def check_death(self):
-        if self.health <= 0:
-            self.kill()
-
     def update(self):
-        self.check_death()
         self.move(self.speed)
 

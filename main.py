@@ -10,7 +10,7 @@ from characters.enemy import Boss, Enemy_Tank, Enemy_Shooter
 from magics.lazerbeam import LazerBeam
 
 from camera import CameraGroup
-from bullet import Bullet
+from bullet import Bullet, Boss_Bullet, Boss_Laser
 from mana import Mana
 
 from block import Block
@@ -62,6 +62,17 @@ class Game:
         self.enemyOnCooldown = True
         self.enemyTime = 0
         self.BossSpawned = False
+
+        # Pré carregando as imagens dos inimigos para não ter que fazer em toda vez que spawna
+        self.Ogre_animation_images = [pygame.image.load(f"assets/images/ogro_{i}.png").convert_alpha() for i in range(1, 5)]
+        new_width = 110
+        new_height = 110
+        self.Ogre_animation_images = [pygame.transform.scale(image, (new_width, new_height)) for image in self.Ogre_animation_images]
+
+        self.Ghost_animation_images = [pygame.image.load(f"assets/images/fantasma_{i}.png").convert_alpha() for i in range(1, 5)]
+        new_width = 90
+        new_height = 90 
+        self.Ghost_animation_images = [pygame.transform.scale(image, (new_width, new_height)) for image in self.Ghost_animation_images]
         
         # Controle de Upgrades
         self.Upgrading = False
@@ -153,18 +164,32 @@ class Game:
         # Cuida dos inimigos 
         for enemy in self.enemies:
             if enemy.health <= 0:
+                enemy.kill()
                 self.enemies.remove(enemy)
                 break
             enemy.set_direction(self.player)
 
             # Inimigos Shooters atiram
-            if enemy.shouldShoot:
-                EnemyBullet = Bullet(enemy.rect.center, self.player.rect.center, [self.camera, self.damagePlayer_sprites], 1, image_path="assets/images/bullet.png")
-                self.projectiles.append(EnemyBullet)
-                enemy.shouldShoot = False
+            if not enemy.IsBoss:
+                if enemy.shouldShoot:
+                    EnemyBullet = Bullet(enemy.rect.center, self.player.rect.center, [self.camera, self.damagePlayer_sprites], 1, image_path="assets/images/bullet.png")
+                    self.projectiles.append(EnemyBullet)
+                    enemy.shouldShoot = False
+            else: 
+                if enemy.shouldShoot:
+                    EnemyBullet1 = Boss_Bullet(1,enemy.rect.center, self.player.rect.center, [self.camera, self.damagePlayer_sprites], 1, image_path="assets/images/bullet.png")
+                    EnemyBullet2 = Boss_Bullet(2,enemy.rect.center, self.player.rect.center, [self.camera, self.damagePlayer_sprites], 1, image_path="assets/images/bullet.png")
+                    self.projectiles.append(EnemyBullet1)
+                    self.projectiles.append(EnemyBullet2)
+                    enemy.shouldShoot = False
+
+                if enemy.shouldLaser:
+                    EnemyLaser = Boss_Laser(self.player.rect.center, [self.camera, self.damagePlayer_sprites], 1)
+                    self.projectiles.append(EnemyLaser)
+                    enemy.shouldLaser = False
 
         for projectile in self.projectiles:
-            if projectile.LifeSpam > 5:
+            if projectile.LifeSpam > 4:
                 self.projectiles.remove(projectile)
 
         # Cria um lazer
@@ -179,8 +204,6 @@ class Game:
 
         self.collisions()
 
-        self.screen.fill((0,0,0)) 
-
         # Cuida da câmera
         self.camera.update() # O camera.update() dá update em todos os outros sprites que estão no seu grupo por default do pygame
                              # então não é necessário chamar self.player.update(), por exemplo
@@ -188,7 +211,7 @@ class Game:
         self.camera.custom_draw()  
 
     def randomizador_inimigos(self, tempo):
-        if self.enemyTime <= 5:
+        if self.enemyTime <= 60:
             if not self.enemyOnCooldown:
 
                 self.enemyOnCooldown = True
@@ -233,10 +256,10 @@ class Game:
 
         #Cria os inimigos com base no tipo deles
         if type == 1:
-            NewEnemy = Enemy_Tank((x, y), [self.attackable_sprites, self.camera, self.damagePlayer_sprites])
+            NewEnemy = Enemy_Tank((x, y), [self.attackable_sprites, self.camera, self.damagePlayer_sprites], self.Ogre_animation_images)
             self.enemies.append(NewEnemy)
         elif type == 2:
-            NewEnemy = Enemy_Shooter((x, y), [self.attackable_sprites, self.camera, self.damagePlayer_sprites])
+            NewEnemy = Enemy_Shooter((x, y), [self.attackable_sprites, self.camera, self.damagePlayer_sprites], self.Ghost_animation_images)
             self.enemies.append(NewEnemy)
         elif type == 3:
             NewEnemy = Boss((x, y), [self.attackable_sprites, self.camera, self.damagePlayer_sprites])
