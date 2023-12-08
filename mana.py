@@ -10,8 +10,8 @@ class Mana(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center = pos)
 
         if type == 1:
-            self.xp = 10
-        elif type == 2: 
             self.xp = 25
-        else:
+        elif type == 2: 
             self.xp = 50
+        else:
+            self.xp = 100

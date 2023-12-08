@@ -38,7 +38,7 @@ class Enemy(Entity):
 class Enemy_Tank(Enemy):
     def __init__(self, pos, groups, animation_images):
         super().__init__(pos, groups, 50, image_path="assets/images/ogro_1.png")
-        self.speed = 1
+        self.speed = 1.5
 
         # Usando as imagens pré carregadas
         self.animation_images = animation_images.copy()

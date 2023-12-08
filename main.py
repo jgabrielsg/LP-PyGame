@@ -52,12 +52,13 @@ class Game:
 
         # Controle de Mana
         self.manaGenerationCooldown = 1
+        self.MaxMana = 25
         self.manaCount = 0
         self.manaTime = 0
 
         # Controle de Inimigos
         self.enemies = []
-        self.enemyGenerationCooldown = 1
+        self.enemyGenerationCooldown = 0.8
         self.enemyTime = 0
         self.LastBossTime = 0
 
@@ -82,7 +83,7 @@ class Game:
         self.LazerBeamCooldown = 7
         self.LazerTime = 0
 
-        self.playerCooldown = 2
+        self.playerCooldown = 1
         self.playerLastShot = 0
 
         self.running = True
@@ -104,6 +105,8 @@ class Game:
                 upgrade = self.upgradeScreen.run(self.camera.offset, upgrade_1, upgrade_2, upgrade_3)
                 
                 self.Magics[upgrade] += 1
+
+                self.playerCooldown = 1 - (self.Magics["Fire Rate"]/10)
 
                 self.Upgrading = False
 
@@ -128,10 +131,10 @@ class Game:
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if self.running == True:
 
-                    if (pygame.time.get_ticks() - self.playerLastShot) > self.playerCooldown:
+                    if (pygame.time.get_ticks() - self.playerLastShot)/1000 > self.playerCooldown:
                         PlayerProjectile = Bullet(self.player.rect.center, pygame.mouse.get_pos(), [self.attack_sprites, self.camera], self.Magics["Dano Base"], self.camera.offset, image_path="assets/images/bullet.png")
                         self.projectiles.append(PlayerProjectile)
-                        self.playerCooldown = pygame.time.get_ticks()
+                        self.playerLastShot = pygame.time.get_ticks()
 
     def collisions(self):
         #Função que cuida das colisões de dano (inimigo - player), (tiro - inimigo)
@@ -159,8 +162,8 @@ class Game:
     def update(self):
         tempo = (pygame.time.get_ticks() - self.start_time) / 1000
 
-        #Cria mana a cada dois segundos (se já não estiver muita mana no mapa)
-        if self.manaCount < 15: self.randomizador_mana(tempo)
+        # Cria mana a cada dois segundos (se já não estiver muita mana no mapa)
+        if self.manaCount < self.MaxMana: self.randomizador_mana(tempo)
         
         # Spawna os inimigos em intervalos de tempo aleatórios.
         self.randomizador_inimigos(tempo)
@@ -218,7 +221,7 @@ class Game:
         if tempo > (self.enemyTime + self.enemyGenerationCooldown):
 
             self.enemyTime = tempo
-            self.spawn_enemy(random.randint(1,2))
+            self.spawn_enemy(random.randint(1,4))
 
             #Dificultando com o passar do tempo
             if tempo > 90: self.enemyGenerationCooldown = 0.1
@@ -229,7 +232,7 @@ class Game:
             else: self.enemyGenerationCooldown = 3
 
         if (tempo - self.LastBossTime) > 60:
-            self.spawn_enemy(3)
+            self.spawn_enemy(5)
             self.LastBossTime = tempo
 
     #Define quando uma mana deve ser spawnada 
@@ -250,13 +253,13 @@ class Game:
         y = self.player.rect.centery + distancia * math.sin(angle)
 
         #Cria os inimigos com base no tipo deles
-        if type == 1:
+        if type < 4:
             NewEnemy = Enemy_Tank((x, y), [self.attackable_sprites, self.camera, self.damagePlayer_sprites], self.Ogre_animation_images)
             self.enemies.append(NewEnemy)
-        elif type == 2:
+        elif type == 4:
             NewEnemy = Enemy_Shooter((x, y), [self.attackable_sprites, self.camera, self.damagePlayer_sprites], self.Ghost_animation_images)
             self.enemies.append(NewEnemy)
-        elif type == 3:
+        elif type == 5:
             NewEnemy = Boss((x, y), [self.attackable_sprites, self.camera, self.damagePlayer_sprites])
             self.enemies.append(NewEnemy)
 
