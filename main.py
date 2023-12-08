@@ -147,10 +147,14 @@ class Game:
         if self.manaCount < 15: self.randomizador_mana(tempo)
         
         # Spawna os inimigos em intervalos de tempo aleatórios.
-        self.randomizador_inimigos(tempo)
+        # self.randomizador_inimigos(tempo)
 
         # Update nos inimigos
         for enemy in self.enemies:
+            if enemy.health <= 0:
+                self.enemies.remove(enemy)
+                break
+
             enemy.set_direction(self.player)
             enemy.update()
 
@@ -161,7 +165,8 @@ class Game:
                 enemy.shouldShoot = False
 
         for projectile in self.projectiles:
-            projectile.update()
+            if projectile.LifeSpam > 5:
+                self.projectiles.remove(projectile)
 
         # Cria um lazer
         if self.Magics["LazerBeam"] != 0:
