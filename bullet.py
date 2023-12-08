@@ -19,7 +19,10 @@ class Bullet(pygame.sprite.Sprite):
 
         self.image = pygame.image.load(image_path).convert_alpha()
         self.rect = self.image.get_rect(center = pos)
+
         self.speed = 10
+        # Aumenta o dano conforme o nível
+        self.damage = 10 + 10 * level
 
         self.StartTimer = pygame.time.get_ticks()
         self.LifeSpam = 0
@@ -47,6 +50,9 @@ class Bullet(pygame.sprite.Sprite):
         self.LifeSpam = (pygame.time.get_ticks() - self.StartTimer)/1000
         if self.LifeSpam > 5:
             self.kill()
+
+    def get_damage(self):
+        return self.damage
 
 class Boss_Bullet(Bullet):
     def __init__(self, type, pos, target_pos, groups, level, offset = pygame.math.Vector2(), image_path=None):

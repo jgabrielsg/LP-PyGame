@@ -10,7 +10,6 @@ class Player(Entity):
         self.image = self.original_image
 
         self.speed = 5
-        self.base_damage = 10
         self.xp = 0
 
     def input(self):

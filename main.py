@@ -52,16 +52,14 @@ class Game:
 
         # Controle de Mana
         self.manaGenerationCooldown = 1
-        self.manaOnCooldown = False
         self.manaCount = 0
         self.manaTime = 0
 
         # Controle de Inimigos
         self.enemies = []
         self.enemyGenerationCooldown = 1
-        self.enemyOnCooldown = True
         self.enemyTime = 0
-        self.BossSpawned = False
+        self.LastBossTime = 0
 
         # Pré carregando as imagens dos inimigos para não ter que fazer em toda vez que spawna
         self.Ogre_animation_images = [pygame.image.load(f"assets/images/ogro_{i}.png").convert_alpha() for i in range(1, 5)]
@@ -77,12 +75,15 @@ class Game:
         # Controle de Upgrades
         self.Upgrading = False
         self.upgradeScreen = UpradeScreen(self.screen)
-        self.Magics = {"Dano Base": 0, "LazerBeam": 0}
+        self.Magics = {"Dano Base": 0, "LazerBeam": 0, "Fire Rate": 0}
 
         # Controle de Poderes
         self.lazerOnCooldown = False
         self.LazerBeamCooldown = 7
         self.LazerTime = 0
+
+        self.playerCooldown = 2
+        self.playerLastShot = 0
 
         self.running = True
         
@@ -126,8 +127,11 @@ class Game:
             #Cuida dos tiros do player
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if self.running == True:
-                    PlayerProjectile = Bullet(self.player.rect.center, pygame.mouse.get_pos(), [self.attack_sprites, self.camera], self.Magics["Dano Base"], self.camera.offset, image_path="assets/images/bullet.png")
-                    self.projectiles.append(PlayerProjectile)
+
+                    if (pygame.time.get_ticks() - self.playerLastShot) > self.playerCooldown:
+                        PlayerProjectile = Bullet(self.player.rect.center, pygame.mouse.get_pos(), [self.attack_sprites, self.camera], self.Magics["Dano Base"], self.camera.offset, image_path="assets/images/bullet.png")
+                        self.projectiles.append(PlayerProjectile)
+                        self.playerCooldown = pygame.time.get_ticks()
 
     def collisions(self):
         #Função que cuida das colisões de dano (inimigo - player), (tiro - inimigo)
@@ -147,7 +151,7 @@ class Game:
                 collision_sprites = pygame.sprite.spritecollide(attack_sprite, self.attackable_sprites, False)
                 if collision_sprites:
                     for target_sprite in collision_sprites:
-                        target_sprite.get_damage(self.player, attack_sprite)
+                        target_sprite.get_damage(attack_sprite)
                         if attack_sprite.sprite_type == 'bullet':
                             attack_sprite.kill()
     
@@ -211,41 +215,32 @@ class Game:
         self.camera.custom_draw()  
 
     def randomizador_inimigos(self, tempo):
-        if self.enemyTime <= 60:
-            if not self.enemyOnCooldown:
+        if tempo > (self.enemyTime + self.enemyGenerationCooldown):
 
-                self.enemyOnCooldown = True
+            self.enemyTime = tempo
+            self.spawn_enemy(random.randint(1,2))
 
-                #Dificultando com o passar do tempo
-                if tempo > 90: self.enemyGenerationCooldown = 0.1
-                elif tempo > 60: self.enemyGenerationCooldown = 0.5
-                elif tempo > 30: self.enemyGenerationCooldown = random.randint(0,1)
-                elif tempo > 15: self.enemyGenerationCooldown = random.randint(0,2)
-                elif tempo > 7: self.enemyGenerationCooldown = random.randint(0,3)
-                else: self.enemyGenerationCooldown = 3
+            #Dificultando com o passar do tempo
+            if tempo > 90: self.enemyGenerationCooldown = 0.1
+            elif tempo > 60: self.enemyGenerationCooldown = 0.5
+            elif tempo > 30: self.enemyGenerationCooldown = random.randint(0,1)
+            elif tempo > 15: self.enemyGenerationCooldown = random.randint(0,2)
+            elif tempo > 7: self.enemyGenerationCooldown = random.randint(0,3)
+            else: self.enemyGenerationCooldown = 3
 
-                self.enemyTime = tempo
-
-            elif tempo > (self.enemyTime + self.enemyGenerationCooldown):
-                self.spawn_enemy(random.randint(1,2))
-                self.enemyOnCooldown = False
-        elif not self.BossSpawned:
+        if (tempo - self.LastBossTime) > 60:
             self.spawn_enemy(3)
-            self.BossSpawned = True
+            self.LastBossTime = tempo
 
     #Define quando uma mana deve ser spawnada 
     def randomizador_mana(self, tempo):
-        if not self.manaOnCooldown:
-            self.manaOnCooldown = True
+        if tempo > (self.manaTime + self.manaGenerationCooldown):
             self.manaTime = tempo
 
             odds = random.randint(1,10)
             if odds > 4: self.spawn_mana(type = 1)
             elif odds > 1: self.spawn_mana(type = 2)
             else: self.spawn_mana(type = 3)
-            
-        elif tempo > (self.manaTime + self.manaGenerationCooldown):
-            self.manaOnCooldown = False
 
     # Cria inimigos fora do campo de visão do player
     def spawn_enemy(self, type=1):
