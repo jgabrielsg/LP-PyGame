@@ -145,8 +145,8 @@ class Game:
             for enemy_sprite in collision_sprites:
                 if enemy_sprite.sprite_type == 'bullet':
                     enemy_sprite.kill()
-                self.player.health -= 10
-        
+                self.player.deal_damage()
+
         #Coleta de Mana
         if self.item_sprites:
             collision_sprites = pygame.sprite.spritecollide(self.player, self.item_sprites, True)
@@ -162,7 +162,7 @@ class Game:
                 collision_sprites = pygame.sprite.spritecollide(attack_sprite, self.attackable_sprites, False)
                 if collision_sprites:
                     for target_sprite in collision_sprites:
-                        target_sprite.get_damage(attack_sprite)
+                        target_sprite.deal_damage(attack_sprite)
                         if attack_sprite.sprite_type == 'bullet':
                             attack_sprite.kill()
     

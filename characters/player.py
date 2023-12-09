@@ -12,6 +12,11 @@ class Player(Entity):
         self.speed = 5
         self.xp = 0
 
+        #Cuida da invencibilidade do player
+        self.LastTimeHit = 0
+        self.InvencibleTime = 2
+        self.invencible = False
+
     def input(self):
         keys = pygame.key.get_pressed()
 
@@ -34,6 +39,17 @@ class Player(Entity):
     def update(self):
         super().update()
         self.input()
+
+        if (pygame.time.get_ticks() - self.LastTimeHit)/1000 > self.InvencibleTime:
+            self.image.set_alpha(255)
+            self.invencible = False
+    
+    def deal_damage(self):
+        if not self.invencible:
+            self.LastTimeHit = pygame.time.get_ticks()
+            self.image.set_alpha(150)
+            self.health -= 10
+            self.invencible = True
 
     def get_damage(self):
         return self.base_damage
