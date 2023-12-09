@@ -92,8 +92,8 @@ class Enemy_Shooter(Enemy):
 class Boss(Enemy):
     angulo = 0
 
-    def __init__(self, pos, groups):
-        super().__init__(pos, groups, 1000, image_path = "assets/images/boss.jpg")
+    def __init__(self, pos, groups, animation_images):
+        super().__init__(pos, groups, 1000, image_path = "assets/images/vilao_1.png")
         self.sprite_type = 'enemy'
 
         self.image = pygame.transform.scale(self.image, (self.image.get_width() * 5, self.image.get_height() * 5))
@@ -110,9 +110,14 @@ class Boss(Enemy):
         self.laser_cooldown = 3000
         self.LastLaser = 0
 
+        self.animation_images = animation_images
+        self.animation_index = 0
+
+        self.facing_left = False
+
     def update(self):
         super().update()
-        # self.animate()
+        self.animate()
 
         if not self.shouldShoot:
             if (pygame.time.get_ticks() - self.LastShot) > self.cooldown:
@@ -130,5 +135,13 @@ class Boss(Enemy):
     #     laser_image = pygame.image.load("assets/images/laser.png").convert_alpha()
     #     laser_image = pygame.transform.scale(laser_image, (laser_image.get_width() * 100, laser_image.get_height() * 5))
     #     rect = laser_image.get_rect(center = player.rect.center)
+
+    def animate(self):
+        animation_speed = 0.07
+        self.animation_index = (self.animation_index + animation_speed) % len(self.animation_images)
+        self.image = self.animation_images[int(self.animation_index)]
+
+        if self.direction.x < 0:
+            self.image = pygame.transform.flip(self.image, True, False)
 
         

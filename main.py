@@ -73,6 +73,11 @@ class Game:
         new_height = 90 
         self.Ghost_animation_images = [pygame.transform.scale(image, (new_width, new_height)) for image in self.Ghost_animation_images]
         
+        self.Boss_animation_images = [pygame.image.load(f"assets/images/vilao_{i}.png").convert_alpha() for i in range(1, 5)]
+        new_width = 230
+        new_height = 230 
+        self.Boss_animation_images = [pygame.transform.scale(image, (new_width, new_height)) for image in self.Boss_animation_images]
+
         # Controle de Upgrades
         self.Upgrading = False
         self.upgradeScreen = UpradeScreen(self.screen)
@@ -271,7 +276,7 @@ class Game:
             NewEnemy = Enemy_Shooter((x, y), [self.attackable_sprites, self.camera, self.damagePlayer_sprites], self.Ghost_animation_images)
             self.enemies.append(NewEnemy)
         elif type == 5:
-            NewEnemy = Boss((x, y), [self.attackable_sprites, self.camera, self.damagePlayer_sprites])
+            NewEnemy = Boss((x, y), [self.attackable_sprites, self.camera, self.damagePlayer_sprites], self.Boss_animation_images)
             self.enemies.append(NewEnemy)
 
     # Cria mana fora do campo de visão do jogador
