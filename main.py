@@ -141,6 +141,7 @@ class Game:
                         PlayerProjectile = Bullet(self.player.rect.center, pygame.mouse.get_pos(), [self.attack_sprites, self.camera], self.Magics["Dano Base"], self.camera.offset, image_path="assets/images/bullet.png")
                         self.projectiles.append(PlayerProjectile)
                         self.playerLastShot = pygame.time.get_ticks()
+                        music_player.shot
 
     def collisions(self):
         #Função que cuida das colisões de dano (inimigo - player), (tiro - inimigo)

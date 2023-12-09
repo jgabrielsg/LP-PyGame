@@ -8,21 +8,21 @@ class Music:
 
     @property
     def background(self):
-        song_path = "assets/sounds/background.mp3" 
-        pygame.mixer.music.load(song_path)
+        sound_path = "assets/sounds/background.mp3" 
+        pygame.mixer.music.load(sound_path)
         pygame.mixer.music.play(-1)
 
     @property
     def shot(self):
-        song_path = ""
-        pygame.mixer.music.load(song_path)
-        pygame.mixer.music.play(-1)
+        sound_path = "assets/sounds/tiro.mp3"
+        damage_sound = pygame.mixer.Sound(sound_path)
+        damage_sound.play()
 
     @property
-    def got_damage(self):
-        song_path = ""
-        pygame.mixer.music.load(song_path)
-        pygame.mixer.music.play(-1)
+    def damage(self):
+        sound_path = ""
+        damage_sound = pygame.mixer.Sound(sound_path)
+        damage_sound.play()
 
     def stop_song(self):
         pygame.mixer.music.stop()
