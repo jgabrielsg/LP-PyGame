@@ -51,6 +51,10 @@ class Player(Entity):
             self.health -= 10
             self.invencible = True
 
+        if self.health <= 0:
+            return True # Se o jogo acaba
+        else: return False
+
     def get_damage(self):
         return self.base_damage
     

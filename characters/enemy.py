@@ -93,7 +93,7 @@ class Boss(Enemy):
     angulo = 0
 
     def __init__(self, pos, groups, animation_images):
-        super().__init__(pos, groups, 1000, image_path = "assets/images/vilao_1.png")
+        super().__init__(pos, groups, 200, image_path = "assets/images/vilao_1.png")
         self.sprite_type = 'enemy'
 
         self.image = pygame.transform.scale(self.image, (self.image.get_width() * 5, self.image.get_height() * 5))

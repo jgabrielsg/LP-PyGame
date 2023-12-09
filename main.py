@@ -88,10 +88,12 @@ class Game:
         self.LazerBeamCooldown = 3
         self.LazerTime = 0
 
-        self.playerCooldown = 0.3
+        self.playerCooldown = 0.4
         self.playerLastShot = 0
 
         self.running = True
+        self.GameOver = False
+        self.font = pygame.font.Font(None, 36)
         
     # Chama todas as funções de game
     def run(self):
@@ -101,7 +103,7 @@ class Game:
         while self.running:
             self.events()
 
-            if not self.Upgrading:
+            if not self.Upgrading and self.running:
                 self.update()
             else:   
                 upgrade_1 = random.choice(list(self.Magics.keys()))
@@ -111,7 +113,7 @@ class Game:
                 
                 self.Magics[upgrade] += 1
 
-                self.playerCooldown = 1 - (self.Magics["Fire Rate"]/20)
+                self.playerCooldown = 0.4 - (self.Magics["Fire Rate"]/20)
                 self.LazerBeamCooldown = 3 - (self.Magics["LazerBeam"]/3)
 
                 self.Upgrading = False
@@ -152,7 +154,8 @@ class Game:
             for enemy_sprite in collision_sprites:
                 if enemy_sprite.sprite_type == 'bullet':
                     enemy_sprite.kill()
-                self.player.deal_damage()
+                self.GameOver = self.player.deal_damage()
+                print(self.player.health)
 
         #Coleta de Mana
         if self.item_sprites:
@@ -208,7 +211,6 @@ class Game:
 
                 if enemy.shouldLaser:
                     EnemyLaser = Boss_Laser(self.player.rect.center, [self.camera, self.ghost_sprite], [self.camera, self.damagePlayer_sprites], 1)
-                    print("teste")
                     self.projectiles.append(EnemyLaser)
                     enemy.shouldLaser = False
 
@@ -234,10 +236,19 @@ class Game:
         self.camera.center_target_camera(self.player)
         self.camera.custom_draw()  
 
+        text_surface = self.font.render(f"Tempo de vida: {tempo:.2f} segundos", True, (255, 0, 0))  # Black text
+        text_rect = text_surface.get_rect(left = 10)  # Adjust the position as needed
+
+        # Blit the text onto the screen
+        self.screen.blit(text_surface, text_rect)
+
+        if self.GameOver:
+            print(tempo)
+
     def randomizador_inimigos(self, tempo):
-        if (tempo - self.LastBossTime) > 0:
-            if len(self.enemies) == 0:
-                self.spawn_enemy(5)
+        if (tempo - self.LastBossTime) > 60:
+            self.LastBossTime = tempo
+            self.spawn_enemy(5)
 
         elif tempo > (self.enemyTime + self.enemyGenerationCooldown):
 
@@ -251,8 +262,6 @@ class Game:
             elif tempo > 15: self.enemyGenerationCooldown = random.randint(0,2)
             elif tempo > 7: self.enemyGenerationCooldown = random.randint(0,3)
             else: self.enemyGenerationCooldown = 3
-
-        
 
     #Define quando uma mana deve ser spawnada 
     def randomizador_mana(self, tempo):
