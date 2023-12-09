@@ -24,5 +24,11 @@ class Music:
         damage_sound = pygame.mixer.Sound(sound_path)
         damage_sound.play()
 
+    @property
+    def mana(self):
+        sound_path = "assets/sounds/mana.mp3"
+        damage_sound = pygame.mixer.Sound(sound_path)
+        damage_sound.play()
+
     def stop_song(self):
         pygame.mixer.music.stop()

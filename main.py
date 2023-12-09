@@ -162,6 +162,7 @@ class Game:
                     self.player.xp_up(mana.xp)
                     mana.kill()
                     self.manaCount -= 1
+                    music_player.mana
         
         #Dano nos inimigos 
         if self.attack_sprites:
