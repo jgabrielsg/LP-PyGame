@@ -36,9 +36,9 @@ class Enemy(Entity):
             self.health -= damage_origin.get_damage()
     
 class Enemy_Tank(Enemy):
-    def __init__(self, pos, groups, animation_images):
-        super().__init__(pos, groups, 50, image_path="assets/images/ogro_1.png")
-        self.speed = 1.5
+    def __init__(self, pos, groups, health, animation_images):
+        super().__init__(pos, groups, health, image_path="assets/images/ogro_1.png")
+        self.speed = 3
 
         # Usando as imagens pré carregadas
         self.animation_images = animation_images.copy()
@@ -59,8 +59,8 @@ class Enemy_Tank(Enemy):
             self.image = pygame.transform.flip(self.image, True, False)
     
 class Enemy_Shooter(Enemy):
-    def __init__(self, pos, groups, animation_images):
-        super().__init__(pos, groups, 50, image_path = "assets/images/fantasma_1.png")
+    def __init__(self, pos, groups, health, animation_images):
+        super().__init__(pos, groups, health, image_path = "assets/images/fantasma_1.png")
 
         # Usando as imagens pré carregadas
         self.animation_images = animation_images
@@ -93,7 +93,7 @@ class Boss(Enemy):
     angulo = 0
 
     def __init__(self, pos, groups, animation_images):
-        super().__init__(pos, groups, 200, image_path = "assets/images/vilao_1.png")
+        super().__init__(pos, groups, 250, image_path = "assets/images/vilao_1.png")
         self.sprite_type = 'enemy'
 
         self.image = pygame.transform.scale(self.image, (self.image.get_width() * 5, self.image.get_height() * 5))

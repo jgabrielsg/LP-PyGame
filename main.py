@@ -59,6 +59,7 @@ class Game:
 
         # Controle de Inimigos
         self.enemies = []
+        self.maxEnemies = 100 #Limita o número de inimigos
         self.enemyGenerationCooldown = 0.8
         self.enemyTime = 0
         self.LastBossTime = 0
@@ -85,7 +86,7 @@ class Game:
         self.Magics = {"Dano Base": 0, "LazerBeam": 0, "Fire Rate": 0}
 
         # Controle de Poderes
-        self.LazerBeamCooldown = 3
+        self.LazerBeamCooldown = 4
         self.LazerTime = 0
 
         self.playerCooldown = 0.4
@@ -114,7 +115,7 @@ class Game:
                 self.Magics[upgrade] += 1
 
                 self.playerCooldown = 0.4 - (self.Magics["Fire Rate"]/20)
-                self.LazerBeamCooldown = 3 - (self.Magics["LazerBeam"]/3)
+                self.LazerBeamCooldown = 4 - (self.Magics["LazerBeam"]/5)
 
                 self.Upgrading = False
 
@@ -185,7 +186,8 @@ class Game:
         if self.manaCount < self.MaxMana: self.randomizador_mana(tempo)
         
         # Spawna os inimigos em intervalos de tempo aleatórios.
-        self.randomizador_inimigos(tempo)
+        if len(self.enemies) < self.maxEnemies:
+            self.randomizador_inimigos(tempo)
 
         # Cuida dos inimigos 
         for enemy in self.enemies:
@@ -247,13 +249,13 @@ class Game:
 
     def randomizador_inimigos(self, tempo):
         if (tempo - self.LastBossTime) > 60:
+            self.spawn_enemy(4)
             self.LastBossTime = tempo
-            self.spawn_enemy(5)
 
         elif tempo > (self.enemyTime + self.enemyGenerationCooldown):
 
             self.enemyTime = tempo
-            self.spawn_enemy(random.randint(1,4))
+            self.spawn_enemy(tempo, random.randint(1,3))
 
             #Dificultando com o passar do tempo
             if tempo > 90: self.enemyGenerationCooldown = 0.1
@@ -274,18 +276,18 @@ class Game:
             else: self.spawn_mana(type = 3)
 
     # Cria inimigos fora do campo de visão do player
-    def spawn_enemy(self, type=1):
+    def spawn_enemy(self, tempo, type=1):
         distancia = 1000
         angle = random.uniform(0, 2 * math.pi)
         x = self.player.rect.centerx + distancia * math.cos(angle)
         y = self.player.rect.centery + distancia * math.sin(angle)
 
         #Cria os inimigos com base no tipo deles
-        if type < 4:
-            NewEnemy = Enemy_Tank((x, y), [self.attackable_sprites, self.camera, self.damagePlayer_sprites], self.Ogre_animation_images)
+        if type < 3:
+            NewEnemy = Enemy_Tank((x, y), [self.attackable_sprites, self.camera, self.damagePlayer_sprites], (100 + tempo/3), self.Ogre_animation_images)
             self.enemies.append(NewEnemy)
-        elif type == 4:
-            NewEnemy = Enemy_Shooter((x, y), [self.attackable_sprites, self.camera, self.damagePlayer_sprites], self.Ghost_animation_images)
+        elif type == 3:
+            NewEnemy = Enemy_Shooter((x, y), [self.attackable_sprites, self.camera, self.damagePlayer_sprites], (50 + tempo/3), self.Ghost_animation_images)
             self.enemies.append(NewEnemy)
         elif type == 5:
             NewEnemy = Boss((x, y), [self.attackable_sprites, self.camera, self.damagePlayer_sprites], self.Boss_animation_images)
@@ -306,9 +308,21 @@ class Game:
     def Cast_Lazer(self, tempo):
         if tempo > (self.LazerTime + self.LazerBeamCooldown):
             self.LazerTime = tempo
-            lazer = LazerBeam(self.player.rect.center, [self.attack_sprites, self.camera], self.Magics["LazerBeam"], image_path="assets/images/woodtile.png")
-            lazer.CastMagic()
-            self.projectiles.append(lazer)
+
+            #Spawnando mais lazers se o nível estiver alto
+            if self.Magics["LazerBeam"] > 6:
+                for i in range (3):
+                    lazer = LazerBeam(self.player.rect.center, [self.attack_sprites, self.camera], self.Magics["LazerBeam"], image_path="assets/images/woodtile.png")
+                    lazer.CastMagic()
+                self.projectiles.append(lazer)
+            elif self.Magics["LazerBeam"] > 3:
+                for i in range (2):
+                    lazer = LazerBeam(self.player.rect.center, [self.attack_sprites, self.camera], self.Magics["LazerBeam"], image_path="assets/images/woodtile.png")
+                    lazer.CastMagic()
+                self.projectiles.append(lazer)
+            else:
+                lazer = LazerBeam(self.player.rect.center, [self.attack_sprites, self.camera], self.Magics["LazerBeam"], image_path="assets/images/woodtile.png")
+                lazer.CastMagic()
 
 # Cria o game e roda ele
 if __name__ == "__main__":

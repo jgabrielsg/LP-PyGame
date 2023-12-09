@@ -20,8 +20,6 @@ class BaseMagic(pygame.sprite.Sprite):
 
         self.rect = self.image.get_rect(center = pos)
 
-        self.CastMagic()
-
     def CastMagic(self):
 
         randX = randrange(-10,10)
