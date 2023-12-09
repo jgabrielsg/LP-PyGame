@@ -90,21 +90,32 @@ class Boss_Bullet(Bullet):
             self.kill()
 
 class Boss_Laser(pygame.sprite.Sprite):
-    def __init__(self, pos, groups, level):
-        super().__init__(groups)
+    def __init__(self, pos, groups_pre, groups_pos, level):
+        super().__init__(groups_pre)
         self.sprite_type = 'bullet'
         self.level = level
         self.pos = pos
+        self.groups = groups_pos
 
         self.image = pygame.image.load("assets/images/laser.png").convert_alpha()
         self.image = pygame.transform.scale(self.image, (self.image.get_width() * 100, self.image.get_height() * 2))
+        self.image.set_alpha(150)
+
         self.rect = self.image.get_rect(center = pos)
 
         self.StartTimer = pygame.time.get_ticks()
         self.LifeSpam = 0
+
+        self.temp_group = pygame.sprite.GroupSingle(self)
     
     def update(self):
         #Destrói o tiro dps de um tempo
         self.LifeSpam = (pygame.time.get_ticks() - self.StartTimer)/1000
+
+        if self.LifeSpam > 1:
+            self.temp_group.remove(self)
+            self.image.set_alpha(255)
+            self.add(self.groups)
+
         if self.LifeSpam > 2:
             self.kill()

@@ -49,6 +49,7 @@ class Game:
         self.damagePlayer_sprites = pygame.sprite.Group()
         self.attackable_sprites = pygame.sprite.Group()
         self.item_sprites = pygame.sprite.Group()
+        self.ghost_sprite = pygame.sprite.Group()
 
         # Controle de Mana
         self.manaGenerationCooldown = 1
@@ -204,7 +205,8 @@ class Game:
                     enemy.shouldShoot = False
 
                 if enemy.shouldLaser:
-                    EnemyLaser = Boss_Laser(self.player.rect.center, [self.camera, self.damagePlayer_sprites], 1)
+                    EnemyLaser = Boss_Laser(self.player.rect.center, [self.camera, self.ghost_sprite], [self.camera, self.damagePlayer_sprites], 1)
+                    print("teste")
                     self.projectiles.append(EnemyLaser)
                     enemy.shouldLaser = False
 
@@ -234,7 +236,6 @@ class Game:
         if (tempo - self.LastBossTime) > 30:
             if len(self.enemies) == 0:
                 self.spawn_enemy(5)
-                self.LastBossTime = tempo
 
         elif tempo > (self.enemyTime + self.enemyGenerationCooldown):
 
