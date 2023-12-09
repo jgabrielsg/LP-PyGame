@@ -288,7 +288,7 @@ class Game:
         y = self.player.rect.centery + distancia * math.sin(angle)
 
         #Cria os inimigos com base no tipo deles
-        NewMana = Mana((x, y), [self.camera, self.item_sprites], type, image_path="assets/images/wall.png")
+        NewMana = Mana((x, y), [self.camera, self.item_sprites], type, image_path="assets/images/mana.png")
         self.manaCount +=1
 
     #Define quando o lazer será

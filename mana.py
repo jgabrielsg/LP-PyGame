@@ -1,13 +1,15 @@
 import pygame
 
 class Mana(pygame.sprite.Sprite):
-    def __init__(self, pos, groups, type, image_path):
+    def __init__(self, pos, groups, type, image_path, size = (100,100)):
         super().__init__(groups)
         self.sprite_type = 'xp'
+        self.size = size
 
-        self.image = pygame.image.load(image_path).convert_alpha()
+        original_image = pygame.image.load(image_path).convert_alpha()
+        self.image = pygame.transform.scale(original_image, self.size)
 
-        self.rect = self.image.get_rect(center = pos)
+        self.rect = self.image.get_rect(center=pos)
 
         if type == 1:
             self.xp = 25
