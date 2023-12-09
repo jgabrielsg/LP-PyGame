@@ -233,7 +233,7 @@ class Game:
         self.camera.custom_draw()  
 
     def randomizador_inimigos(self, tempo):
-        if (tempo - self.LastBossTime) > 30:
+        if (tempo - self.LastBossTime) > 0:
             if len(self.enemies) == 0:
                 self.spawn_enemy(5)
 
