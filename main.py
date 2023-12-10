@@ -358,18 +358,18 @@ class Game:
             #Spawnando mais lazers se o nível estiver alto
             if self.Magics["LazerBeam"] > 6:
                 for i in range (3):
-                    lazer = LazerBeam(self.player.rect.center, [self.attack_sprites, self.camera], self.Magics["LazerBeam"], image_path="assets/images/woodtile.png")
+                    lazer = LazerBeam(self.player.rect.center, [self.attack_sprites, self.camera], self.Magics["LazerBeam"], image_path="assets/images/LaserBeam.png")
                     lazer.CastMagic()
                 self.projectiles.append(lazer)
 
             elif self.Magics["LazerBeam"] > 3:
                 for i in range (2):
-                    lazer = LazerBeam(self.player.rect.center, [self.attack_sprites, self.camera], self.Magics["LazerBeam"], image_path="assets/images/woodtile.png")
+                    lazer = LazerBeam(self.player.rect.center, [self.attack_sprites, self.camera], self.Magics["LazerBeam"], image_path="assets/images/LaserBeam.png")
                     lazer.CastMagic()
 
                 self.projectiles.append(lazer)
             else:
-                lazer = LazerBeam(self.player.rect.center, [self.attack_sprites, self.camera], self.Magics["LazerBeam"], image_path="assets/images/woodtile.png")
+                lazer = LazerBeam(self.player.rect.center, [self.attack_sprites, self.camera], self.Magics["LazerBeam"], image_path="assets/images/LaserBeam.png")
                 lazer.CastMagic()
 
 # Cria o game e roda ele
