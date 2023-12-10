@@ -43,7 +43,7 @@ class Game:
         self.camera = CameraGroup(groundpath='assets/images/mapa.png')
 
         # Cria os objetos do mapa
-        # tmx_data = load_pygame('assets/mapa.tmx')
+        # tmx_data = load_pygame('assets/maptile/mapa.tmx')
         # for obj in tmx_data.objects:
         #     pos = obj.x, obj.y
         #     if obj.image:
