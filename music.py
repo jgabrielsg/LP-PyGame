@@ -32,7 +32,7 @@ class Music:
     def mana(self):
         sound_path = "assets/sounds/mana.mp3"
         mana_sound = pygame.mixer.Sound(sound_path)
-        mana_sound.set_volume()
+        mana_sound.set_volume(self.volume)
         mana_sound.play()
 
     def stop_song(self):
