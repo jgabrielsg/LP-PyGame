@@ -249,7 +249,7 @@ class Game:
 
     def randomizador_inimigos(self, tempo):
         if (tempo - self.LastBossTime) > 60:
-            self.spawn_enemy(4)
+            self.spawn_enemy(tempo, 4)
             self.LastBossTime = tempo
 
         elif tempo > (self.enemyTime + self.enemyGenerationCooldown):
@@ -289,7 +289,7 @@ class Game:
         elif type == 3:
             NewEnemy = Enemy_Shooter((x, y), [self.attackable_sprites, self.camera, self.damagePlayer_sprites], (50 + tempo/3), self.Ghost_animation_images)
             self.enemies.append(NewEnemy)
-        elif type == 5:
+        elif type == 4:
             NewEnemy = Boss((x, y), [self.attackable_sprites, self.camera, self.damagePlayer_sprites], self.Boss_animation_images)
             self.enemies.append(NewEnemy)
 
@@ -315,10 +315,12 @@ class Game:
                     lazer = LazerBeam(self.player.rect.center, [self.attack_sprites, self.camera], self.Magics["LazerBeam"], image_path="assets/images/woodtile.png")
                     lazer.CastMagic()
                 self.projectiles.append(lazer)
+
             elif self.Magics["LazerBeam"] > 3:
                 for i in range (2):
                     lazer = LazerBeam(self.player.rect.center, [self.attack_sprites, self.camera], self.Magics["LazerBeam"], image_path="assets/images/woodtile.png")
                     lazer.CastMagic()
+
                 self.projectiles.append(lazer)
             else:
                 lazer = LazerBeam(self.player.rect.center, [self.attack_sprites, self.camera], self.Magics["LazerBeam"], image_path="assets/images/woodtile.png")

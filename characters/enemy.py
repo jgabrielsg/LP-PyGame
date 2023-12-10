@@ -65,6 +65,7 @@ class Enemy_Shooter(Enemy):
         # Usando as imagens pré carregadas
         self.animation_images = animation_images
         self.animation_index = 0
+        self.speed = 2
 
         self.facing_left = False
 
