@@ -268,7 +268,7 @@ class Game:
 
 
     def randomizador_inimigos(self, tempo):
-        if (tempo - self.LastBossTime) > 60:
+        if (tempo - self.LastBossTime) > 10:
             self.spawn_enemy(tempo, 4)
             self.LastBossTime = tempo
 
