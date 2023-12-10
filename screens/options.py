@@ -23,7 +23,7 @@ class Options:
                                             hovering_color="Yellow")
         
         self.background_image = pygame.image.load("assets/images/background_options.jpg")
-        self.background_image = pygame.transform.scale(self.background_image, (SCREEN_WIDHT, SCREEN_HEIGHT+100))
+        self.background_image = pygame.transform.scale(self.background_image, (SCREEN_WIDHT, SCREEN_HEIGHT))
 
     def events(self):
         for event in pygame.event.get():

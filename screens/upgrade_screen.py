@@ -1,6 +1,7 @@
 import pygame
 from button import Button
 import sys
+from config import SCREEN_WIDHT, SCREEN_HEIGHT
 
 class UpradeScreen:
     def __init__(self, screen):
@@ -8,14 +9,17 @@ class UpradeScreen:
         self.running = True
 
         # Botão aqui
-        self.OPTION_1 = Button(image=None, pos=(640, 300), 
-                                  text_input="texto", font=pygame.font.Font(None, 75), base_color="Black", hovering_color="Green")
+        self.OPTION_1 = Button(image=None, pos=(720, 260), 
+                                  text_input="texto", font=pygame.font.Font(None, 75), base_color="Black", hovering_color="White")
         
-        self.OPTION_2 = Button(image=None, pos=(640, 400), 
-                                  text_input="texto", font=pygame.font.Font(None, 75), base_color="Black", hovering_color="Green")
+        self.OPTION_2 = Button(image=None, pos=(720, 440), 
+                                  text_input="texto", font=pygame.font.Font(None, 75), base_color="Black", hovering_color="White")
         
-        self.OPTION_3 = Button(image=None, pos=(640, 500), 
-                                  text_input="texto", font=pygame.font.Font(None, 75), base_color="Black", hovering_color="Green")
+        self.OPTION_3 = Button(image=None, pos=(720, 620), 
+                                  text_input="texto", font=pygame.font.Font(None, 75), base_color="Black", hovering_color="White")
+
+        self.background_image = pygame.image.load("assets/images/upgrade_background.jpg")
+        self.background_image = pygame.transform.scale(self.background_image, (SCREEN_WIDHT, SCREEN_HEIGHT))
 
     def events(self):
         for event in pygame.event.get():
@@ -32,15 +36,23 @@ class UpradeScreen:
                     return self.OPTION_3.get_text()
 
     def update(self):
-        pass  # Atualize o estado do menu aqui, se necessário
+        self.MOUSE_POS = pygame.mouse.get_pos()
+        self.OPTION_1.changeColor(self.MOUSE_POS)
+        self.OPTION_1.update(self.screen)
+
+        self.OPTION_2.changeColor(self.MOUSE_POS)
+        self.OPTION_2.update(self.screen)
+
+        self.OPTION_3.changeColor(self.MOUSE_POS)
+        self.OPTION_3.update(self.screen)
 
     def render(self):
         # Limpa a tela
-        self.screen.fill((255, 255, 255))  # Preenche a tela com branco
+        self.screen.blit(self.background_image, (0, 0))
 
         # Desenha o texto das opções
         OPTIONS_TEXT = pygame.font.Font(None, 45).render("Choose one powerup.", True, "Black")
-        OPTIONS_RECT = OPTIONS_TEXT.get_rect(center=(640, 240))
+        OPTIONS_RECT = OPTIONS_TEXT.get_rect(center=(640, 100))
         self.screen.blit(OPTIONS_TEXT, OPTIONS_RECT)
 
         # Desenha o botão e o texto do botão
