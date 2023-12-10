@@ -17,7 +17,7 @@ from mana import Mana
 from block import Block
 from config import SCREEN_HEIGHT, SCREEN_WIDHT
 
-from screens.death import DeathScreen
+from screens.death_screen import DeathScreen
 from screens.main_menu import Menu
 from screens.options import Options
 from screens.upgrade_screen import UpradeScreen
@@ -59,10 +59,6 @@ class Game:
         self.player = Player(initial_pos, self.camera, 100, image_paths=player_images)
         self.projectiles = []
         self.xp_levelup = 100
-
-        # In case of death
-        self.dead = False
-        self.dead_menu = DeathScreen(self.screen)
 
         # Cria grupos (listas) de sprites para iteração
         self.attack_sprites = pygame.sprite.Group()
@@ -116,7 +112,12 @@ class Game:
         self.playerLastShot = 0
 
         self.running = True
+
+        # Fim de jogo
+        self.UltimoTempo = 0
+        self.tempoTotal = 0
         self.GameOver = False
+        self.dead_menu = DeathScreen(self.screen)
         self.font = pygame.font.Font(None, 36)
         
     # Chama todas as funções de game
@@ -127,22 +128,41 @@ class Game:
         while self.running:
             self.events()
 
-            if not self.Upgrading and not self.dead and self.running:
-                self.update()
-            elif self.Upgrading:   
-                upgrade_1 = random.choice(list(self.Magics.keys()))
-                upgrade_2 = random.choice(list(self.Magics.keys()))
-                upgrade_3 = random.choice(list(self.Magics.keys()))
-                upgrade = self.upgradeScreen.run(self.camera.offset, upgrade_1, upgrade_2, upgrade_3)
-                
-                self.Magics[upgrade] += 1
+            if not self.GameOver:
 
-                self.playerCooldown = 0.3 - (self.Magics["Fire Rate"]/20)
-                self.LazerBeamCooldown = 3 - (self.Magics["LazerBeam"]/5)
+                if not self.Upgrading and self.running:
+                    self.update()
+                elif self.Upgrading:   
+                    upgrade_1 = random.choice(list(self.Magics.keys()))
+                    upgrade_2 = random.choice(list(self.Magics.keys()))
+                    upgrade_3 = random.choice(list(self.Magics.keys()))
+                    upgrade = self.upgradeScreen.run(self.camera.offset, upgrade_1, upgrade_2, upgrade_3)
+                    
+                    self.Magics[upgrade] += 1      
+                    self.playerCooldown = 0.3 - (self.Magics["Fire Rate"]/20)
+                    self.LazerBeamCooldown = 3 - (self.Magics["LazerBeam"]/5)      
+                    self.Upgrading = False  
 
-                self.Upgrading = False    
-            elif self.dead:
-                self.dead_menu.run(pygame.time.get_ticks())
+            else:
+                    self.dead_menu.run(self.UltimoTempo)
+                    
+                    for i in self.enemies:
+                        i.kill()
+                    self.enemies.clear()
+
+                    for i in self.projectiles:
+                        i.kill()
+                    self.projectiles.clear()
+
+                    self.player.health = 100
+                    self.enemyTime = 0
+                    self.LazerTime = 0
+                    self.manaTime = 0
+
+                    self.Magics = {"Dano Base": 0, "LazerBeam": 0, "Fire Rate": 0}
+
+                    self.GameOver = False
+            
 
             # Limita a taxa de quadros (FPS)
             clock.tick(60)
@@ -181,7 +201,6 @@ class Game:
                 if enemy_sprite.sprite_type == 'bullet':
                     enemy_sprite.kill()
                 self.GameOver = self.player.deal_damage()
-                print(self.player.health)
 
         #Coleta de Mana
         if self.item_sprites:
@@ -205,7 +224,7 @@ class Game:
     
     # Qualquer atualização de posição ou animação ficam aqui.
     def update(self):
-        tempo = (pygame.time.get_ticks() - self.start_time) / 1000
+        tempo = (pygame.time.get_ticks() - self.start_time) / 1000 - self.tempoTotal
 
         # Cria mana a cada dois segundos (se já não estiver muita mana no mapa)
         if self.manaCount < self.MaxMana: self.randomizador_mana(tempo)
@@ -255,9 +274,6 @@ class Game:
             self.player.reset_xp()
             self.Upgrading = True
 
-        if self.player.health <= 0:
-            self.dead = True
-
         self.collisions()
 
         # Cuida da câmera
@@ -275,7 +291,8 @@ class Game:
         self.screen.blit(text_surface, text_rect)
 
         if self.GameOver:
-            print(tempo)
+            self.UltimoTempo = tempo
+            self.tempoTotal += tempo
 
 
     def randomizador_inimigos(self, tempo):

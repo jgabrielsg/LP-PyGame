@@ -57,7 +57,7 @@ class DeathScreen:
     def run(self, time_survived):
         clock = pygame.time.Clock()
 
-        self.MENU_TEXT = get_font(40).render(f"You survived: {time_survived/1000:.2f} s", True, "#b68f40")
+        self.MENU_TEXT = get_font(40).render(f"You survived: {time_survived:.2f} s", True, "#b68f40")
 
         while self.running:
             result = self.events()
