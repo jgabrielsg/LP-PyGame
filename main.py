@@ -23,8 +23,6 @@ from screens.upgrade_screen import UpradeScreen
 
 from music import Music
 
-music_player = Music()
-
 class Tile(pygame.sprite.Sprite):
     def __init__(self,pos,surf, groups):
         super().__init__(groups)
@@ -45,13 +43,13 @@ class Game:
         self.camera = CameraGroup(groundpath='assets/images/mapa.png')
 
         # Cria os objetos do mapa
-        tmx_data = load_pygame('assets/mapa.tmx')
-        for obj in tmx_data.objects:
-            pos = obj.x, obj.y
-            if obj.image:
-                Tile(pos, obj.image, self.camera)
+        # tmx_data = load_pygame('assets/mapa.tmx')
+        # for obj in tmx_data.objects:
+        #     pos = obj.x, obj.y
+        #     if obj.image:
+        #         Tile(pos, obj.image, self.camera)
 
-        object_layer = tmx_data.get_layer_by_name("Objetos")
+        # object_layer = tmx_data.get_layer_by_name("Objetos")
 
         initial_pos = (SCREEN_WIDHT/2, SCREEN_HEIGHT/2)
 
@@ -345,12 +343,14 @@ class Game:
 
 # Cria o game e roda ele
 if __name__ == "__main__":
+    music_player = Music()
     game = Game()
     menu = Menu(game.screen)
     options = Options(game.screen)
     while True:
         result = menu.run()
         if result == 'play':
+            music_player.set_volume(options.get_volume())
             music_player.background
             game.run()
         elif result == 'options':
