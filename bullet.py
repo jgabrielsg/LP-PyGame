@@ -57,7 +57,7 @@ class Bullet(pygame.sprite.Sprite):
 class Boss_Bullet(Bullet):
     def __init__(self, type, pos, target_pos, groups, level, offset = pygame.math.Vector2(), image_path=None):
         super().__init__(pos, target_pos, groups, level, offset = offset, image_path=image_path)
-        self.image = pygame.transform.scale(self.image, (self.image.get_width() * 5, self.image.get_height() * 5))
+        self.image = pygame.transform.scale(self.image, (self.image.get_width() * 2, self.image.get_height() * 2))
         self.updated = False
 
         #Vetores unitarios da direção do tiro.
@@ -97,8 +97,8 @@ class Boss_Laser(pygame.sprite.Sprite):
         self.pos = pos
         self.groups = groups_pos
 
-        self.image = pygame.image.load("assets/images/laser.png").convert_alpha()
-        self.image = pygame.transform.scale(self.image, (self.image.get_width() * 100, self.image.get_height() * 2))
+        self.image = pygame.image.load("assets/images/thunder.png").convert_alpha()
+        self.image = pygame.transform.scale(self.image, (self.image.get_width() * 5, self.image.get_height() * 2))
         self.image.set_alpha(150)
 
         self.rect = self.image.get_rect(center = pos)

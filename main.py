@@ -67,7 +67,7 @@ class Game:
         self.ghost_sprite = pygame.sprite.Group()
 
         #Health Bar
-        self.health_bar = HealthBar(initial_pos, self.camera)
+        self.health_bar = HealthBar(self.screen)
 
         # Controle de Mana
         self.manaGenerationCooldown = 1
@@ -223,8 +223,8 @@ class Game:
                     enemy.shouldShoot = False
             else: 
                 if enemy.shouldShoot:
-                    EnemyBullet1 = Boss_Bullet(1,enemy.rect.center, self.player.rect.center, [self.camera, self.damagePlayer_sprites], 1, image_path="assets/images/bullet.png")
-                    EnemyBullet2 = Boss_Bullet(2,enemy.rect.center, self.player.rect.center, [self.camera, self.damagePlayer_sprites], 1, image_path="assets/images/bullet.png")
+                    EnemyBullet1 = Boss_Bullet(1,enemy.rect.center, self.player.rect.center, [self.camera, self.damagePlayer_sprites], 1, image_path="assets/images/screw.png")
+                    EnemyBullet2 = Boss_Bullet(2,enemy.rect.center, self.player.rect.center, [self.camera, self.damagePlayer_sprites], 1, image_path="assets/images/screw.png")
                     self.projectiles.append(EnemyBullet1)
                     self.projectiles.append(EnemyBullet2)
                     enemy.shouldShoot = False
@@ -269,7 +269,7 @@ class Game:
 
 
     def randomizador_inimigos(self, tempo):
-        if (tempo - self.LastBossTime) > 60:
+        if (tempo - self.LastBossTime) > 10:
             self.spawn_enemy(tempo, 4)
             self.LastBossTime = tempo
 

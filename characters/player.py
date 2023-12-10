@@ -71,15 +71,18 @@ class Player(Entity):
         self.xp = 0
 
 class HealthBar(pygame.sprite.Sprite):
-    def __init__(self, initial_player_pos, groups):
-        super().__init__(groups)
-        self.position = initial_player_pos
+    def __init__(self, screen):
+        super().__init__()
+        self.screen = screen
         self.image = pygame.image.load("assets/images/health_bar10.png").convert_alpha()
         self.image = pygame.transform.scale(self.image, (self.image.get_width() * 6, self.image.get_height() * 6))
-        self.rect = self.image.get_rect(center = self.position,left = 10)
+        self.rect = self.image.get_rect(center = (150,700))
 
-    def update_health(self, health_now):
-        i = health_now/10
+    def update(self, health_now):
+
+        self.screen.blit(self.image, self.rect)
+
+        i = int(health_now/10)
         self.image = pygame.image.load(f"assets/images/health_bar{i}.png").convert_alpha()
         self.image = pygame.transform.scale(self.image, (self.image.get_width() * 6, self.image.get_height() * 6))
-        self.rect = self.image.get_rect(center = self.position,left = 10)
+        self.rect = self.image.get_rect(center = (150,700))
