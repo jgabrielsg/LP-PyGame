@@ -83,3 +83,6 @@ class Options:
 
         pygame.quit()
         sys.exit()
+
+    def get_volume(self):
+        return self.volume

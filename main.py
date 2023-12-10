@@ -23,8 +23,6 @@ from screens.upgrade_screen import UpradeScreen
 
 from music import Music
 
-music_player = Music()
-
 class Tile(pygame.sprite.Sprite):
     def __init__(self,pos,surf, groups):
         super().__init__(groups)
@@ -287,9 +285,9 @@ class Game:
             self.manaTime = tempo
 
             odds = random.randint(1,10)
-            if odds > 4: self.spawn_mana(type = 1)
-            elif odds > 1: self.spawn_mana(type = 2)
-            else: self.spawn_mana(type = 3)
+            if odds > 4: self.spawn_mana(type = 1, image_path="assets/images/mana.png")
+            elif odds > 1: self.spawn_mana(type = 2, image_path="assets/images/mana2.png")
+            else: self.spawn_mana(type = 3, image_path="assets/images/mana3.png")
 
     # Cria inimigos fora do campo de visão do player
     def spawn_enemy(self, tempo, type=1):
@@ -310,14 +308,14 @@ class Game:
             self.enemies.append(NewEnemy)
 
     # Cria mana fora do campo de visão do jogador
-    def spawn_mana(self, type=1):
+    def spawn_mana(self, type=1, image_path = "assets/images/mana.png"):
         distancia = 1000
         angle = random.uniform(0, 2 * math.pi)
         x = self.player.rect.centerx + distancia * math.cos(angle)
         y = self.player.rect.centery + distancia * math.sin(angle)
 
         #Cria os inimigos com base no tipo deles
-        NewMana = Mana((x, y), [self.camera, self.item_sprites], type, image_path="assets/images/mana.png")
+        NewMana = Mana((x, y), [self.camera, self.item_sprites], type, image_path)
         self.manaCount +=1
 
     #Define quando o lazer será
@@ -344,12 +342,14 @@ class Game:
 
 # Cria o game e roda ele
 if __name__ == "__main__":
+    music_player = Music()
     game = Game()
     menu = Menu(game.screen)
     options = Options(game.screen)
     while True:
         result = menu.run()
         if result == 'play':
+            music_player.set_volume(options.get_volume())
             music_player.background
             game.run()
         elif result == 'options':

@@ -54,9 +54,6 @@ class Player(Entity):
         if self.health <= 0:
             return True # Se o jogo acaba
         else: return False
-
-    def get_damage(self):
-        return self.base_damage
     
     def get_xp(self):
         return self.xp

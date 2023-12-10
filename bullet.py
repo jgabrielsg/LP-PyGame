@@ -22,7 +22,7 @@ class Bullet(pygame.sprite.Sprite):
 
         self.speed = 10
         # Aumenta o dano conforme o nível
-        self.damage = 10 + 10 * level
+        self.damage = 10 + 15 * level
 
         self.StartTimer = pygame.time.get_ticks()
         self.LifeSpam = 0
