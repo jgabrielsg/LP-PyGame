@@ -102,7 +102,7 @@ class Game:
         # Controle de Upgrades
         self.Upgrading = False
         self.upgradeScreen = UpradeScreen(self.screen)
-        self.Magics = {"Dano Base": 0, "LazerBeam": 0, "Fire Rate": 0}
+        self.Magics = {"Stronger Attacks": 0, "Laser Beam": 0, "Fire Rate": 0}
 
         # Controle de Poderes
         self.LazerBeamCooldown = 3
@@ -139,7 +139,7 @@ class Game:
                     
                     self.Magics[upgrade] += 1      
                     self.playerCooldown = 0.3 - (self.Magics["Fire Rate"]/20)
-                    self.LazerBeamCooldown = 3 - (self.Magics["LazerBeam"]/5)      
+                    self.LazerBeamCooldown = 3 - (self.Magics["Laser Beam"]/5)      
                     self.Upgrading = False  
 
             else:
@@ -158,7 +158,7 @@ class Game:
                     self.LazerTime = 0
                     self.manaTime = 0
 
-                    self.Magics = {"Stronger Attacks": 0, "Lazer Beam": 0, "Faster Bullets": 0}
+                    self.Magics = {"Stronger Attacks": 0, "Laser Beam": 0, "Fire Rate": 0}
 
                     self.start_time = pygame.time.get_ticks()
 
@@ -186,7 +186,7 @@ class Game:
                 if self.running == True:
 
                     if (pygame.time.get_ticks() - self.playerLastShot)/1000 > self.playerCooldown:
-                        PlayerProjectile = Bullet(self.player.rect.center, pygame.mouse.get_pos(), [self.attack_sprites, self.camera], self.Magics["Dano Base"], self.camera.offset, image_path="assets/images/bullet.png")
+                        PlayerProjectile = Bullet(self.player.rect.center, pygame.mouse.get_pos(), [self.attack_sprites, self.camera], self.Magics["Stronger Attacks"], self.camera.offset, image_path="assets/images/bullet.png")
                         self.projectiles.append(PlayerProjectile)
                         self.playerLastShot = pygame.time.get_ticks()
                         music_player.shot
@@ -265,7 +265,7 @@ class Game:
                 self.projectiles.remove(projectile)
 
         # Cria um lazer
-        if self.Magics["LazerBeam"] != 0:
+        if self.Magics["Laser Beam"] != 0:
             self.Cast_Lazer(tempo)
 
         # Aumenta o nível do player
@@ -356,20 +356,20 @@ class Game:
             self.LazerTime = tempo
 
             #Spawnando mais lazers se o nível estiver alto
-            if self.Magics["LazerBeam"] > 6:
+            if self.Magics["Laser Beam"] > 6:
                 for i in range (3):
-                    lazer = LazerBeam(self.player.rect.center, [self.attack_sprites, self.camera], self.Magics["LazerBeam"], image_path="assets/images/LaserBeam.png")
+                    lazer = LazerBeam(self.player.rect.center, [self.attack_sprites, self.camera], self.Magics["Laser Beam"], image_path="assets/images/LaserBeam.png")
                     lazer.CastMagic()
                 self.projectiles.append(lazer)
 
-            elif self.Magics["LazerBeam"] > 3:
+            elif self.Magics["Laser Beam"] > 3:
                 for i in range (2):
-                    lazer = LazerBeam(self.player.rect.center, [self.attack_sprites, self.camera], self.Magics["LazerBeam"], image_path="assets/images/LaserBeam.png")
+                    lazer = LazerBeam(self.player.rect.center, [self.attack_sprites, self.camera], self.Magics["Laser Beam"], image_path="assets/images/LaserBeam.png")
                     lazer.CastMagic()
 
                 self.projectiles.append(lazer)
             else:
-                lazer = LazerBeam(self.player.rect.center, [self.attack_sprites, self.camera], self.Magics["LazerBeam"], image_path="assets/images/LaserBeam.png")
+                lazer = LazerBeam(self.player.rect.center, [self.attack_sprites, self.camera], self.Magics["Laser Beam"], image_path="assets/images/LaserBeam.png")
                 lazer.CastMagic()
 
 # Cria o game e roda ele

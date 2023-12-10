@@ -22,7 +22,7 @@ class Bullet(pygame.sprite.Sprite):
 
         self.speed = 10
         # Aumenta o dano conforme o nível
-        self.damage = 10 + 10 * level
+        self.damage = 20 + 15 * level
 
         self.StartTimer = pygame.time.get_ticks()
         self.LifeSpam = 0
@@ -68,11 +68,11 @@ class Boss_Bullet(Bullet):
 
     def shoot(self):
         if self.type == 1:
-            self.vx = 2 * math.cos(Boss.angulo)
-            self.vy = 2 * math.sin(Boss.angulo)
+            self.vx = 1 * math.cos(Boss.angulo)
+            self.vy = 1 * math.sin(Boss.angulo)
         else:
-            self.vx = 2 * math.cos(Boss.angulo + math.pi)
-            self.vy = 2 * math.sin(Boss.angulo + math.pi)
+            self.vx = 1 * math.cos(Boss.angulo + math.pi)
+            self.vy = 1 * math.sin(Boss.angulo + math.pi)
 
         Boss.angulo = Boss.angulo + 0.25
 
