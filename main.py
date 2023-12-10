@@ -66,7 +66,7 @@ class Game:
         self.ghost_sprite = pygame.sprite.Group()
 
         #Health Bar
-        self.health_bar = HealthBar(initial_pos, self.camera)
+        self.health_bar = HealthBar(self.screen)
 
         # Controle de Mana
         self.manaGenerationCooldown = 1
