@@ -115,7 +115,6 @@ class Game:
 
         # Fim de jogo
         self.UltimoTempo = 0
-        self.tempoTotal = 0
         self.GameOver = False
         self.dead_menu = DeathScreen(self.screen)
         self.font = pygame.font.Font(None, 36)
@@ -161,8 +160,9 @@ class Game:
 
                     self.Magics = {"Dano Base": 0, "LazerBeam": 0, "Fire Rate": 0}
 
+                    self.start_time = pygame.time.get_ticks()
+
                     self.GameOver = False
-            
 
             # Limita a taxa de quadros (FPS)
             clock.tick(60)
@@ -224,7 +224,7 @@ class Game:
     
     # Qualquer atualização de posição ou animação ficam aqui.
     def update(self):
-        tempo = (pygame.time.get_ticks() - self.start_time) / 1000 - self.tempoTotal
+        tempo = (pygame.time.get_ticks() - self.start_time) / 1000 
 
         # Cria mana a cada dois segundos (se já não estiver muita mana no mapa)
         if self.manaCount < self.MaxMana: self.randomizador_mana(tempo)
@@ -292,8 +292,6 @@ class Game:
 
         if self.GameOver:
             self.UltimoTempo = tempo
-            self.tempoTotal += tempo
-
 
     def randomizador_inimigos(self, tempo):
         if (tempo - self.LastBossTime) > 60:
