@@ -5,7 +5,7 @@ import math
 import random
 from pytmx.util_pygame import load_pygame
 
-from characters.player import Player
+from characters.player import Player, HealthBar
 from characters.enemy import Boss, Enemy_Tank, Enemy_Shooter
 
 from magics.lazerbeam import LazerBeam
@@ -43,13 +43,13 @@ class Game:
         self.camera = CameraGroup(groundpath='assets/images/mapa.png')
 
         # Cria os objetos do mapa
-        # tmx_data = load_pygame('assets/maptile/mapa.tmx')
-        # for obj in tmx_data.objects:
-        #     pos = obj.x, obj.y
-        #     if obj.image:
-        #         Tile(pos, obj.image, self.camera)
+        tmx_data = load_pygame('assets/maptile/mapa.tmx')
+        for obj in tmx_data.objects:
+            pos = obj.x, obj.y
+            if obj.image:
+                Tile(pos, obj.image, self.camera)
 
-        # object_layer = tmx_data.get_layer_by_name("Objetos")
+        object_layer = tmx_data.get_layer_by_name("Objetos")
 
         initial_pos = (SCREEN_WIDHT/2, SCREEN_HEIGHT/2)
 
@@ -64,6 +64,9 @@ class Game:
         self.attackable_sprites = pygame.sprite.Group()
         self.item_sprites = pygame.sprite.Group()
         self.ghost_sprite = pygame.sprite.Group()
+
+        #Health Bar
+        self.health_bar = HealthBar(initial_pos, self.camera)
 
         # Controle de Mana
         self.manaGenerationCooldown = 1
@@ -254,6 +257,8 @@ class Game:
 
         text_surface = self.font.render(f"Tempo de vida: {tempo:.2f} segundos", True, (255, 0, 0))  # Black text
         text_rect = text_surface.get_rect(left = 10)  # Adjust the position as needed
+
+        self.health_bar.update(self.player.health)
 
         # Blit the text onto the screen
         self.screen.blit(text_surface, text_rect)
