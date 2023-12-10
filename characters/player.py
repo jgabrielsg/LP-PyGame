@@ -17,7 +17,7 @@ class Player(Entity):
 
         #Cuida da invencibilidade do player
         self.LastTimeHit = 0
-        self.InvencibleTime = 2
+        self.InvencibleTime = 1
         self.invencible = False
 
     def input(self):
