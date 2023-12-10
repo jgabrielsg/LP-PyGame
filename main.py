@@ -222,8 +222,8 @@ class Game:
                     enemy.shouldShoot = False
             else: 
                 if enemy.shouldShoot:
-                    EnemyBullet1 = Boss_Bullet(1,enemy.rect.center, self.player.rect.center, [self.camera, self.damagePlayer_sprites], 1, image_path="assets/images/bullet.png")
-                    EnemyBullet2 = Boss_Bullet(2,enemy.rect.center, self.player.rect.center, [self.camera, self.damagePlayer_sprites], 1, image_path="assets/images/bullet.png")
+                    EnemyBullet1 = Boss_Bullet(1,enemy.rect.center, self.player.rect.center, [self.camera, self.damagePlayer_sprites], 1, image_path="assets/images/screw.png")
+                    EnemyBullet2 = Boss_Bullet(2,enemy.rect.center, self.player.rect.center, [self.camera, self.damagePlayer_sprites], 1, image_path="assets/images/screw.png")
                     self.projectiles.append(EnemyBullet1)
                     self.projectiles.append(EnemyBullet2)
                     enemy.shouldShoot = False
