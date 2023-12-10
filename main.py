@@ -17,6 +17,7 @@ from mana import Mana
 from block import Block
 from config import SCREEN_HEIGHT, SCREEN_WIDHT
 
+from screens.death import DeathScreen
 from screens.main_menu import Menu
 from screens.options import Options
 from screens.upgrade_screen import UpradeScreen
@@ -58,6 +59,10 @@ class Game:
         self.player = Player(initial_pos, self.camera, 100, image_paths=player_images)
         self.projectiles = []
         self.xp_levelup = 100
+
+        # In case of death
+        self.dead = False
+        self.dead_menu = DeathScreen(self.screen)
 
         # Cria grupos (listas) de sprites para iteração
         self.attack_sprites = pygame.sprite.Group()
@@ -122,9 +127,9 @@ class Game:
         while self.running:
             self.events()
 
-            if not self.Upgrading and self.running:
+            if not self.Upgrading and not self.dead and self.running:
                 self.update()
-            else:   
+            elif self.Upgrading:   
                 upgrade_1 = random.choice(list(self.Magics.keys()))
                 upgrade_2 = random.choice(list(self.Magics.keys()))
                 upgrade_3 = random.choice(list(self.Magics.keys()))
@@ -135,7 +140,9 @@ class Game:
                 self.playerCooldown = 0.3 - (self.Magics["Fire Rate"]/20)
                 self.LazerBeamCooldown = 3 - (self.Magics["LazerBeam"]/5)
 
-                self.Upgrading = False
+                self.Upgrading = False    
+            elif self.dead:
+                self.dead_menu.run()
 
             # Limita a taxa de quadros (FPS)
             clock.tick(60)
@@ -247,6 +254,9 @@ class Game:
             self.xp_levelup *= 1.1
             self.player.reset_xp()
             self.Upgrading = True
+
+        if self.player.health <= 0:
+            self.dead = True
 
         self.collisions()
 
