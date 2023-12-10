@@ -54,7 +54,8 @@ class Game:
         initial_pos = (SCREEN_WIDHT/2, SCREEN_HEIGHT/2)
 
         # Player related
-        self.player = Player(initial_pos, self.camera, 100, image_path="assets/images/player.png")
+        player_images = ["assets/images/player1.png", "assets/images/player2.png"]
+        self.player = Player(initial_pos, self.camera, 100, image_paths=player_images)
         self.projectiles = []
         self.xp_levelup = 100
 

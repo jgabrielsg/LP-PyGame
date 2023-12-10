@@ -2,11 +2,14 @@ import pygame
 from characters.entity import Entity
 
 class Player(Entity):
-    def __init__(self, pos, group, health, image_path):
-        super().__init__(pos, group, health, image_path)
+    def __init__(self, pos, group, health, image_paths):
+        super().__init__(pos, group, health, image_paths[0])  # Inicializa com a primeira imagem
         self.sprite_type = 'player'
         
-        self.original_image = pygame.transform.scale(self.image, (self.image.get_width() // 1.2, self.image.get_height() // 1.2))
+        # Carrega as duas imagens e as dimensiona
+        self.images = [pygame.transform.scale(pygame.image.load(path), (self.image.get_width() * 1.5, self.image.get_height() * 1.5)) for path in image_paths]
+        self.image_index = 0  # Índice da imagem
+        self.original_image = pygame.transform.scale(self.image, (self.image.get_width() * 1.5, self.image.get_height() * 1.5))
         self.image = self.original_image
 
         self.speed = 5
