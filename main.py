@@ -158,7 +158,7 @@ class Game:
                     self.LazerTime = 0
                     self.manaTime = 0
 
-                    self.Magics = {"Dano Base": 0, "LazerBeam": 0, "Fire Rate": 0}
+                    self.Magics = {"Stronger Attacks": 0, "Lazer Beam": 0, "Faster Bullets": 0}
 
                     self.start_time = pygame.time.get_ticks()
 
@@ -282,7 +282,7 @@ class Game:
         self.camera.center_target_camera(self.player)
         self.camera.custom_draw()  
 
-        text_surface = self.font.render(f"Tempo de vida: {tempo:.2f} segundos", True, (255, 0, 0))  # Black text
+        text_surface = self.font.render(f"Survival Time: {tempo:.2f} seconds", True, (255, 0, 0))  # Black text
         text_rect = text_surface.get_rect(left = 10)  # Adjust the position as needed
 
         self.health_bar.update(self.player.health)
