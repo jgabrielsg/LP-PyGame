@@ -8,10 +8,11 @@ class DeathScreen:
         self.screen = screen
         self.running = True
 
-        # Crie os botões aqui
-        self.PLAY_BUTTON = Button(image=pygame.image.load("assets/images/flop.png"), pos=(640, 250), 
+        self.MENU_TEXT = get_font(60).render(f"You survived: {0}", True, "#b68f40")
+
+        self.PLAY_BUTTON = Button(image=pygame.image.load("assets/images/flop.png"), pos=(640, 450), 
                                   text_input="PLAY AGAIN", font=get_font(36), base_color="Black", hovering_color="White")
-        self.QUIT_BUTTON = Button(image=pygame.image.load("assets/images/flop.png"), pos=(640, 550), 
+        self.QUIT_BUTTON = Button(image=pygame.image.load("assets/images/flop.png"), pos=(640, 600), 
                                   text_input="QUIT", font=get_font(36), base_color="Black", hovering_color="White")
 
         self.background_image = pygame.image.load("assets/images/mapa.png")
@@ -43,6 +44,8 @@ class DeathScreen:
         # Desenha a imagem de fundo do menu
         self.screen.blit(self.background_image, (0, 0))
 
+        self.screen.blit(self.MENU_TEXT, (200, 130))
+
         # Desenha os botões e o texto dos botões
         for button in [self.PLAY_BUTTON, self.QUIT_BUTTON]:
             self.screen.blit(button.image, button.rect)
@@ -51,8 +54,10 @@ class DeathScreen:
         pygame.display.flip()  # Atualiza a tela
 
 
-    def run(self):
+    def run(self, time_survived):
         clock = pygame.time.Clock()
+
+        self.MENU_TEXT = get_font(40).render(f"You survived: {time_survived/1000:.2f} s", True, "#b68f40")
 
         while self.running:
             result = self.events()

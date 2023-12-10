@@ -142,7 +142,7 @@ class Game:
 
                 self.Upgrading = False    
             elif self.dead:
-                self.dead_menu.run()
+                self.dead_menu.run(pygame.time.get_ticks())
 
             # Limita a taxa de quadros (FPS)
             clock.tick(60)
@@ -279,7 +279,7 @@ class Game:
 
 
     def randomizador_inimigos(self, tempo):
-        if (tempo - self.LastBossTime) > 10:
+        if (tempo - self.LastBossTime) > 60:
             self.spawn_enemy(tempo, 4)
             self.LastBossTime = tempo
 
