@@ -12,15 +12,15 @@ class Options:
         # Botão aqui
         self.BACK_BUTTON = Button(image=None, pos=(640, 460),
                                   text_input="Main Menu", font=pygame.font.Font(None, 75), base_color="White",
-                                  hovering_color="Green")
+                                  hovering_color="Yellow")
 
         self.INCREASE_VOLUME_BUTTON = Button(image=None, pos=(540, 360),
                                             text_input="+", font=pygame.font.Font(None, 50), base_color="White",
-                                            hovering_color="Green")
+                                            hovering_color="Yellow")
 
         self.DECREASE_VOLUME_BUTTON = Button(image=None, pos=(740, 360),
                                             text_input="-", font=pygame.font.Font(None, 50), base_color="White",
-                                            hovering_color="Green")
+                                            hovering_color="Yellow")
         
         self.background_image = pygame.image.load("assets/images/background_options.jpg")
         self.background_image = pygame.transform.scale(self.background_image, (SCREEN_WIDHT, SCREEN_HEIGHT+100))
@@ -40,7 +40,15 @@ class Options:
                     self.volume = max(0, self.volume - 10)  # Diminui o volume em 10, limitado a 0
 
     def update(self):
-        pass  # Atualize o estado do menu aqui, se necessário
+        self.MOUSE_POS = pygame.mouse.get_pos()
+        self.BACK_BUTTON.changeColor(self.MOUSE_POS)
+        self.BACK_BUTTON.update(self.screen)
+
+        self.INCREASE_VOLUME_BUTTON.changeColor(self.MOUSE_POS)
+        self.INCREASE_VOLUME_BUTTON.update(self.screen)
+
+        self.DECREASE_VOLUME_BUTTON.changeColor(self.MOUSE_POS)
+        self.DECREASE_VOLUME_BUTTON.update(self.screen)
 
     def render(self):
         # Desenha a imagem de fundo do menu
