@@ -3,6 +3,7 @@ import sys
 
 import math
 import random
+from pytmx.util_pygame import load_pygame
 
 from characters.player import Player
 from characters.enemy import Boss, Enemy_Tank, Enemy_Shooter
@@ -24,6 +25,12 @@ from music import Music
 
 music_player = Music()
 
+class Tile(pygame.sprite.Sprite):
+    def __init__(self,pos,surf, groups):
+        super().__init__(groups)
+        self.image = surf
+        self.rect = self.image.get_rect(topleft = pos)
+
 class Game:
     def __init__(self):
         pygame.init()
@@ -36,6 +43,15 @@ class Game:
 
         # Camera setup
         self.camera = CameraGroup(groundpath='assets/images/mapa.png')
+
+        # Cria os objetos do mapa
+        tmx_data = load_pygame('assets/mapa.tmx')
+        for obj in tmx_data.objects:
+            pos = obj.x, obj.y
+            if obj.image:
+                Tile(pos, obj.image, self.camera)
+
+        object_layer = tmx_data.get_layer_by_name("Objetos")
 
         initial_pos = (SCREEN_WIDHT/2, SCREEN_HEIGHT/2)
 
@@ -86,10 +102,10 @@ class Game:
         self.Magics = {"Dano Base": 0, "LazerBeam": 0, "Fire Rate": 0}
 
         # Controle de Poderes
-        self.LazerBeamCooldown = 4
+        self.LazerBeamCooldown = 3
         self.LazerTime = 0
 
-        self.playerCooldown = 0.4
+        self.playerCooldown = 0.3
         self.playerLastShot = 0
 
         self.running = True
@@ -114,8 +130,8 @@ class Game:
                 
                 self.Magics[upgrade] += 1
 
-                self.playerCooldown = 0.4 - (self.Magics["Fire Rate"]/20)
-                self.LazerBeamCooldown = 4 - (self.Magics["LazerBeam"]/5)
+                self.playerCooldown = 0.3 - (self.Magics["Fire Rate"]/20)
+                self.LazerBeamCooldown = 3 - (self.Magics["LazerBeam"]/5)
 
                 self.Upgrading = False
 

@@ -8,7 +8,6 @@ class Block(pygame.Rect):
         else:
             self.image = None
 
-
     def draw(self, screen):
         if self.image:
             for i in range(self.x, self.x + self.width, 64):
