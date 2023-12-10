@@ -8,12 +8,14 @@ class Menu:
         self.screen = screen
         self.running = True
 
+        self.MENU_TEXT = get_font(60).render("Hallow Survival", True, "#b68f40")
+
         # Crie os botões aqui
-        self.PLAY_BUTTON = Button(image=pygame.image.load("assets/images/flop.png"), pos=(640, 250), 
+        self.PLAY_BUTTON = Button(image=pygame.image.load("assets/images/flop.png"), pos=(640, 300), 
                                   text_input="PLAY", font=get_font(36), base_color="Black", hovering_color="White")
-        self.OPTIONS_BUTTON = Button(image=pygame.image.load("assets/images/flop.png"), pos=(640, 400), 
+        self.OPTIONS_BUTTON = Button(image=pygame.image.load("assets/images/flop.png"), pos=(640, 450), 
                                      text_input="OPTIONS", font=get_font(36), base_color="Black", hovering_color="White")
-        self.QUIT_BUTTON = Button(image=pygame.image.load("assets/images/flop.png"), pos=(640, 550), 
+        self.QUIT_BUTTON = Button(image=pygame.image.load("assets/images/flop.png"), pos=(640, 600), 
                                   text_input="QUIT", font=get_font(36), base_color="Black", hovering_color="White")
 
         self.background_image = pygame.image.load("assets/images/mapa.png")
@@ -49,6 +51,8 @@ class Menu:
     def render(self):
         # Desenha a imagem de fundo do menu
         self.screen.blit(self.background_image, (0, 0))
+
+        self.screen.blit(self.MENU_TEXT, (200, 130))
 
         # Desenha os botões e o texto dos botões
         for button in [self.PLAY_BUTTON, self.OPTIONS_BUTTON, self.QUIT_BUTTON]:
