@@ -73,7 +73,7 @@ class HealthBar(pygame.sprite.Sprite):
         self.screen = screen
         self.image = pygame.image.load("assets/images/health_bar10.png").convert_alpha()
         self.image = pygame.transform.scale(self.image, (self.image.get_width() * 6, self.image.get_height() * 6))
-        self.rect = self.image.get_rect(center = (150,110))
+        self.rect = self.image.get_rect(center = (150,700))
 
     def update(self, health_now):
 
@@ -82,4 +82,4 @@ class HealthBar(pygame.sprite.Sprite):
         i = int(health_now/10)
         self.image = pygame.image.load(f"assets/images/health_bar{i}.png").convert_alpha()
         self.image = pygame.transform.scale(self.image, (self.image.get_width() * 6, self.image.get_height() * 6))
-        self.rect = self.image.get_rect(center = (150,110))
+        self.rect = self.image.get_rect(center = (150,700))
