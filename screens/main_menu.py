@@ -10,11 +10,11 @@ class Menu:
 
         # Crie os botões aqui
         self.PLAY_BUTTON = Button(image=pygame.image.load("assets/images/flop.png"), pos=(640, 250), 
-                                  text_input="PLAY", font=get_font(36), base_color="Black", hovering_color="Green")
+                                  text_input="PLAY", font=get_font(36), base_color="Black", hovering_color="White")
         self.OPTIONS_BUTTON = Button(image=pygame.image.load("assets/images/flop.png"), pos=(640, 400), 
-                                     text_input="OPTIONS", font=get_font(36), base_color="Black", hovering_color="Green")
+                                     text_input="OPTIONS", font=get_font(36), base_color="Black", hovering_color="White")
         self.QUIT_BUTTON = Button(image=pygame.image.load("assets/images/flop.png"), pos=(640, 550), 
-                                  text_input="QUIT", font=get_font(36), base_color="Black", hovering_color="Green")
+                                  text_input="QUIT", font=get_font(36), base_color="Black", hovering_color="White")
 
         self.background_image = pygame.image.load("assets/images/mapa.png")
         self.background_image = pygame.transform.scale(self.background_image, (SCREEN_WIDHT, SCREEN_HEIGHT))
@@ -36,7 +36,15 @@ class Menu:
                     sys.exit()
 
     def update(self):
-        pass  # Atualize o estado do menu aqui, se necessário
+        self.MOUSE_POS = pygame.mouse.get_pos()
+        self.PLAY_BUTTON.changeColor(self.MOUSE_POS)
+        self.PLAY_BUTTON.update(self.screen)
+
+        self.OPTIONS_BUTTON.changeColor(self.MOUSE_POS)
+        self.OPTIONS_BUTTON.update(self.screen)
+
+        self.QUIT_BUTTON.changeColor(self.MOUSE_POS)
+        self.QUIT_BUTTON.update(self.screen)
 
     def render(self):
         # Desenha a imagem de fundo do menu
