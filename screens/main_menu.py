@@ -36,7 +36,15 @@ class Menu:
                     sys.exit()
 
     def update(self):
-        pass  # Atualize o estado do menu aqui, se necessário
+        self.MOUSE_POS = pygame.mouse.get_pos()
+        self.PLAY_BUTTON.changeColor(self.MOUSE_POS)
+        self.PLAY_BUTTON.update(self.screen)
+
+        self.OPTIONS_BUTTON.changeColor(self.MOUSE_POS)
+        self.OPTIONS_BUTTON.update(self.screen)
+
+        self.QUIT_BUTTON.changeColor(self.MOUSE_POS)
+        self.QUIT_BUTTON.update(self.screen)
 
     def render(self):
         # Desenha a imagem de fundo do menu
